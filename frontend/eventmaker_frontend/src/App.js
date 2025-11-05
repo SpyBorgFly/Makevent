@@ -1,23 +1,31 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import EventList from './components/EventList';
+import EventForm from './components/EventForm';
+import TestAPI from './TestAPI';
 
 function App() {
+  const [refreshEvents, setRefreshEvents] = useState(false);
+
+  const handleEventCreated = (newEvent) => {
+    console.log('Новое событие создано:', newEvent);
+    setRefreshEvents(!refreshEvents);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>EventMaker - Управление событиями</h1>
+        <p>Создавайте и управляйте своими событиями</p>
       </header>
+      
+      <main className="App-main">
+        <TestAPI />
+        <div className="container">
+          <EventForm onEventCreated={handleEventCreated} />
+          <EventList key={refreshEvents} />
+        </div>
+      </main>
     </div>
   );
 }

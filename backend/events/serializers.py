@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Event
+from .models import Event, Task, FinanceItem
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -7,3 +7,29 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = ['id', 'title', 'description', 'date', 'location', 'created_by', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_by', 'created_at', 'updated_at']
+
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = [
+            'id', 'event', 'title', 'description', 'status', 'priority',
+            'start_date', 'due_date', 'is_completed', 'assignees',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+    # assignees как список id
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['assignees'] = [user.id for user in instance.assignees.all()]
+        return data
+
+
+class FinanceItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FinanceItem
+        fields = [
+            'id', 'event', 'title', 'amount', 'type', 'category',
+            'date', 'description', 'created_by', 'created_at'
+        ]
+        read_only_fields = ['id', 'created_by', 'created_at']

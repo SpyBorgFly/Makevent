@@ -1,11 +1,11 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, mixins, generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 import logging
-from .models import Event
-from .serializers import EventSerializer
+from .models import Event, Task, FinanceItem
+from .serializers import EventSerializer, TaskSerializer, FinanceItemSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -84,3 +84,62 @@ class EventViewSet(viewsets.ModelViewSet):
             'status': 'ok',
             'total_events': Event.objects.count()
         })
+    
+    # ---------- Tasks endpoints: /api/events/<pk>/tasks/ ----------
+    @action(detail=True, methods=['get', 'post'])
+    def tasks(self, request, pk=None):
+        """
+        GET: список задач для события
+        POST: создать задачу для события
+        """
+        try:
+            event = self.get_object()
+        except Exception:
+            return Response({'detail': 'Event not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        if request.method == 'GET':
+            tasks = event.tasks.all()
+            serializer = TaskSerializer(tasks, many=True)
+            return Response(serializer.data)
+
+        # POST
+        serializer = TaskSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(event=event)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # ---------- Finance endpoints: /api/events/<pk>/finance/ ----------
+    @action(detail=True, methods=['get', 'post'])
+    def finance(self, request, pk=None):
+        """
+        GET: список финансовых записей (трат/доходов) для события
+        POST: создать финансовую запись для события
+        """
+        try:
+            event = self.get_object()
+        except Exception:
+            return Response({'detail': 'Event not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        if request.method == 'GET':
+            items = event.finance_items.all()
+            serializer = FinanceItemSerializer(items, many=True)
+            return Response(serializer.data)
+
+        serializer = FinanceItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(event=event, created_by=request.user if request.user.is_authenticated else None)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class TaskViewSet(viewsets.ModelViewSet):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+
+class FinanceItemViewSet(viewsets.ModelViewSet):
+    queryset = FinanceItem.objects.all()
+    serializer_class = FinanceItemSerializer
+
+    

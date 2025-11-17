@@ -107,6 +107,10 @@ body {
     list-style: none;
 }
 
+.menu-link.active {
+    color: var(--color-blue);
+}
+
 .menu-link {
     font-size: 1.333333rem;
     color: #000000;

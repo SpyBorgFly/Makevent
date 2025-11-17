@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventPro</title>
+    <link rel="icon" href="images/EventProLogo.PNG" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <header class="header shadow-glass">
+        <div class="header__container">
+            <div class="header__logo">
+                <a href="finance.html" class="header__logo-link">
+                    <img src="images/logo.png" alt="logo" class="logo">
+                    <div class="logo-name">EventPro</div>
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav__menu-list">
+                    <li class="nav__menu-list-item"><a href="index.html" class="menu-link">Дашборд</a></li>
+                    <li class="nav__menu-list-item"><a href="events.html" class="menu-link">Мероприятия</a></li>
+                    <li class="nav__menu-list-item"><a href="#" class="menu-link">Контакты</a></li>
+                    <li class="nav__menu-list-item"><a href="notes.html" class="menu-link">Заметки</a></li>
+                    <li class="nav__menu-list-item"><a href="finance.html" class="menu-link">Финансы</a></li>
+                </ul>
+            </nav>
+            <div class="header__profile">
+                <a href="#" class="header__profile-link">
+                    <div class="header__profile-avatar">
+                        <img src="images/default-avatar.png" alt="Avatar" class="profile-avatar">
+                    </div>
+                    <div class="header__profile-name">Николай</div>
+                </a>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <div class="main__container">
+            <section class="main__top-section">
+                <div class="main__top-section-header">
+                    <h1 class="main__h1 h1">Добрый день, Николай!</h1>
+                    <span class="main__top-section-text-1">У вас запланировано</span>
+                    <span class="main__top-section-text-2">5 мероприятий</span>
+                </div>
+                <div class="main__top-section-event-boxes">
+                    <div class="main__top-section-event-box shadow-glass">
+                        <span class="main__top-section-event-box-count in-progress">2</span>
+                        <span class="main__top-section-event-box-text">Ближайших события</span>
+                    </div>
+                    <div class="main__top-section-event-box shadow-glass">
+                        <span class="main__top-section-event-box-count deadline">1</span>
+                        <span class="main__top-section-event-box-text">Срочный дедлайн</span>
+                    </div>
+                </div>
+            </section>
+            <section class="widgets">
+                <div class="widgets__card shadow-glass">
+                    <div class="widgets__card-header-section">
+                        <h2 class="widgets__card-header">Ближайшие ивенты</h2>
+                        <a href="#" class="widgets__card-header-link">Все</a>
+                    </div>
+                    <div class="widgets__card-event-list">
+                        <a href="#" class="widgets__card-event shadow-glass">
+                            <div class="card-event-date">
+                                <span class="card-event-date__day">23</span>
+                                <span class="card-event-date__month">марта</span>
+                            </div>
+                            <div class="card-event-description">
+                                <span class="card-event-description__header">Сессия партнеров</span>
+                                <span class="card-event-description__datetime">23 марта, 12:00</span>
+                            </div>
+                            <div class="card-event-status work">
+                                В работе
+                            </div>
+                        </a>
+                        <a href="#" class="widgets__card-event shadow-glass">
+                            <div class="card-event-date">
+                                <span class="card-event-date__day">25</span>
+                                <span class="card-event-date__month">марта</span>
+                            </div>
+                            <div class="card-event-description">
+                                <span class="card-event-description__header">Тимбилдинг</span>
+                                <span class="card-event-description__datetime">23 марта, 12:00</span>
+                            </div>
+                            <div class="card-event-status notes">
+                                Черновик
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="widgets__card shadow-glass">
+                    <div class="widgets__card-header-section">
+                        <h2 class="widgets__card-header">Срочные дедлайны</h2>
+                        <a href="#" class="widgets__card-header-link">Перейти</a>
+                    </div>
+                    <div class="widgets__card-event-list">
+                        <a href="#" class="widgets__card-event shadow-glass">
+                            <div class="card-event-date">
+                                <span class="card-event-date__day">23</span>
+                                <span class="card-event-date__month">марта</span>
+                            </div>
+                            <div class="card-event-description">
+                                <span class="card-event-description__header">Оплатить депозит</span>
+                                <span class="card-event-description__datetime">До завтра</span>
+                            </div>
+                            <div class="card-event-status work error">
+                                Срочно
+                            </div>
+                        </a>
+                        <a href="#" class="widgets__card-event shadow-glass">
+                            <div class="card-event-date">
+                                <span class="card-event-date__day">24</span>
+                                <span class="card-event-date__month">марта</span>
+                            </div>
+                            <div class="card-event-description">
+                                <span class="card-event-description__header">Подписать договор</span>
+                                <span class="card-event-description__datetime">До 24 марта</span>
+                            </div>
+                            <div class="card-event-status work">
+                                В работе
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <button href="#" class="create-event-button shadow-glass">
+            <div class="plus-symbol">+</div>
+            <span class="create-event-text">Создать ивент</span>
+        </button>
+    </main>
+    <header class="header-mobile shadow-glass">
+        <nav class="nav-mobile">
+            <ul class="nav-mobile__items">
+                <li class="nav-mobile__item">
+                    <a href="index.html" class="nav-mobile__home">
+                        <img src="images/home-icon.svg" alt="home" class="nav-mobile__home-icon nav-icon">
+                        <span class="nav-mobile__link">Дашборд</span>
+                    </a>
+                </li>
+                <li class="nav-mobile__item">
+                    <a href="events.html" class="nav-mobile__events">
+                        <img src="images/events-icon.svg" alt="events" class="nav-mobile__events-icon nav-icon">
+                        <span class="nav-mobile__link">Ивенты</span>
+                    </a>
+                </li>
+                <li class="nav-mobile__item">
+                    <button class="nav-mobile__create-btn">+</button>
+                    <span class="nav-mobile__create-text">Новое событие</span>
+                </li>
+                <li class="nav-mobile__item">
+                    <a href="notes.html" class="nav-mobile__notes">
+                        <img src="images/notes-icon.svg" alt="home" class="nav-mobile__notes-icon nav-icon">
+                        <span class="nav-mobile__link">Заметки</span>
+                    </a>
+                </li>
+                <li class="nav-mobile__item">
+                    <a href="finance.html" class="nav-mobile__finance">
+                        <img src="images/finance.svg" alt="home" class="nav-mobile__finance-icon nav-icon">
+                        <span class="nav-mobile__link">Финансы</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+</body>
+
+</html>

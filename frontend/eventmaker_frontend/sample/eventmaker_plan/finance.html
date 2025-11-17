@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventPro</title>
+    <link rel="icon" href="images/EventProLogo.PNG" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <header class="header shadow-glass">
+        <div class="header__container">
+            <div class="header__logo">
+                <a href="#" class="header__logo-link">
+                    <img src="images/logo.png" alt="logo" class="logo">
+                    <div class="logo-name">EventPro</div>
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav__menu-list">
+                    <li class="nav__menu-list-item"><a href="index.html" class="menu-link">Дашборд</a></li>
+                    <li class="nav__menu-list-item"><a href="events.html" class="menu-link">Мероприятия</a></li>
+                    <li class="nav__menu-list-item"><a href="#" class="menu-link">Контакты</a></li>
+                    <li class="nav__menu-list-item"><a href="notes.html" class="menu-link">Заметки</a></li>
+                    <li class="nav__menu-list-item"><a href="finance.html" class="menu-link">Финансы</a></li>
+                </ul>
+            </nav>
+            <div class="header__profile">
+                <a href="#" class="header__profile-link">
+                    <div class="header__profile-avatar">
+                        <img src="images/default-avatar.png" alt="Avatar" class="profile-avatar">
+                    </div>
+                    <div class="header__profile-name">Николай</div>
+                </a>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <div class="main__container">
+            <section class="main__top-section">
+                <div class="main__top-section-header">
+                    <h1 class="main__h1 h1-notes">Финансы</h1>
+                </div>
+                <div class="main__top-section-button">
+                    <button class="main__top-section-btn create-event-btn">+ Новая транзакция</button>
+                </div>
+            </section>
+            <section class="widgets__finance widgets">
+                <div class="widgets__finance-budgets">
+                    <div class="widgets__finance-total-budget budgets shadow-glass">
+                        <div class="budget__header">Всего по проектам</div>
+                        <div class="budget__sum">3 265 000 ₽</div>
+                        <div class="budget__percents green">+12% за месяц</div>
+                    </div>
+                    <div class="widgets__finance-expenses budgets shadow-glass">
+                        <div class="budget__header">Расходы</div>
+                        <div class="budget__sum red">1 980 000 ₽</div>
+                        <div class="budget__percents red">-8% за месяц</div>
+                    </div>
+                    <div class="widgets__finance-income budgets shadow-glass">
+                        <div class="budget__header">Доходы</div>
+                        <div class="budget__sum green">2 370 000 ₽</div>
+                        <div class="budget__percents green">+16% за месяц</div>
+                    </div>
+                </div>
+                <div class="widgets__finance-summary shadow-glass">
+                    <h2 class="widgets__finance-summary-header">Бюджеты по мероприятиям</h2>
+                    <div class="widgets__finance-summary-list">
+                        <div class="summary-list__item">
+                            <div class="summary-list__item-color blue-dot"></div>
+                            <div class="summary-list__item-name">Сессия партнеров</div>
+                            <div class="summary-list__item-budget">1 200 000 ₽</div>
+                        </div>
+                        <div class="summary-list__item">
+                            <div class="summary-list__item-color green-dot"></div>
+                            <div class="summary-list__item-name">Весенний вебинар</div>
+                            <div class="summary-list__item-budget">320 000 ₽</div>
+                        </div>
+                        <div class="summary-list__item">
+                            <div class="summary-list__item-color orange-dot"></div>
+                            <div class="summary-list__item-name">Team Building 2024</div>
+                            <div class="summary-list__item-budget">Не определен</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="widgets__finance-transactions shadow-glass">
+                    <h2 class="widgets__finance-transactions-header">Последние транзакции</h2>
+                    <table class="finance-transactions-table">
+                        <tr class="table__header-row">
+                            <td class="table__item-header">Дата</td>
+                            <td class="table__item-header">Событие</td>
+                            <td class="table__item-header">Описание</td>
+                            <td class="table__item-header">Сумма</td>
+                            <td class="table__item-header">Статус</td>
+                        </tr>
+                        <tr class="table__list-row">
+                            <td class="table__item table-date-section">22.03.2024</td>
+                            <td class="table__item table-event-section">Сессия партнеров</td>
+                            <td class="table__item table-description-section">Оплата площадки</td>
+                            <td class="table__item table-finance-section">-350 000 ₽</td>
+                            <td class="table__item table-status-section">
+                                <span class="card-event-status notes">
+                                    Проведено
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="table__list-row">
+                            <td class="table__item table-date-section">20.03.2024</td>
+                            <td class="table__item table-event-section">Весенний вебинар</td>
+                            <td class="table__item table-description-section">Поступление спонсорских</td>
+                            <td class="table__item table-finance-section">+120 000 ₽</td>
+                            <td class="table__item table-status-section">
+                                <span class="card-event-status notes">
+                                    Проведено
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="table__list-row">
+                            <td class="table__item table-date-section">18.03.2024</td>
+                            <td class="table__item table-event-section">Team Building 2024</td>
+                            <td class="table__item table-description-section">Бронирование транспорта</td>
+                            <td class="table__item table-finance-section">-45 000 ₽</td>
+                            <td class="table__item table-status-section">
+                                <span class="card-event-status error">
+                                    В ожидании
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+    <header class="header-mobile shadow-glass">
+        <nav class="nav-mobile">
+            <ul class="nav-mobile__items">
+                <li class="nav-mobile__item">
+                    <a href="index.html" class="nav-mobile__home">
+                        <img src="images/home-icon.svg" alt="home" class="nav-mobile__home-icon nav-icon">
+                        <span class="nav-mobile__link">Дашборд</span>
+                    </a>
+                </li>
+                <li class="nav-mobile__item">
+                    <a href="events.html" class="nav-mobile__events">
+                        <img src="images/events-icon.svg" alt="events" class="nav-mobile__events-icon nav-icon">
+                        <span class="nav-mobile__link">Ивенты</span>
+                    </a>
+                </li>
+                <li class="nav-mobile__item">
+                    <button class="nav-mobile__create-btn">+</button>
+                    <span class="nav-mobile__create-text">Новое событие</span>
+                </li>
+                <li class="nav-mobile__item">
+                    <a href="notes.html" class="nav-mobile__notes">
+                        <img src="images/notes-icon.svg" alt="home" class="nav-mobile__notes-icon nav-icon">
+                        <span class="nav-mobile__link">Заметки</span>
+                    </a>
+                </li>
+                <li class="nav-mobile__item">
+                    <a href="finance.html" class="nav-mobile__finance">
+                        <img src="images/finance.svg" alt="home" class="nav-mobile__finance-icon nav-icon">
+                        <span class="nav-mobile__link">Финансы</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+</body>
+
+</html>

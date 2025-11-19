@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Header } from "../components/Header";
 import { MobileHeader } from "../components/MobileHeader";
 
@@ -18,22 +18,22 @@ export function EventsPage() {
                                 <button onClick={() => setIsOpen(false)} className="close-button">&#10006;</button>
                             </div>
                         </div>
-                        <div className="popup-form__name-section">
-                            <div className="popup-form__name-section-header popup-headers">Название</div>
-                            <input type="text" className="popup-form__name-section-input" required placeholder="Введите название события" />
-                        </div>
-                        <div className="popup-form__data-section">
-                            <div className="popup-form__date-section-header popup-headers">Дата</div>
-                            <input type="text" className="popup-form__date-section-input" required placeholder="Введите название события" />
-                        </div>
-                        <div className="popup-form__time-section">
-                            <div className="popup-form__time-section-header popup-headers">Время</div>
-                            <input type="text" className="popup-form__time-section-input" required placeholder="Введите название события" />
-                        </div>
-                        <div className="popup-form__description-section">
-                            <div className="popup-form__description-section-header popup-headers">Описание</div>
-                            <input type="text" className="popup-form__description-section-input" required placeholder="Коротко опишите мероприятие" />
-                        </div>
+                    </div>
+                    <div className="popup-form__name-section">
+                        <div className="popup-form__name-section-header popup-headers">Название</div>
+                        <input type="text" className="popup-form__name-section-input" required placeholder="Введите название события" />
+                    </div>
+                    <div className="popup-form__data-section">
+                        <div className="popup-form__date-section-header popup-headers">Дата</div>
+                        <input type="text" className="popup-form__date-section-input" required placeholder="Введите название события" />
+                    </div>
+                    <div className="popup-form__time-section">
+                        <div className="popup-form__time-section-header popup-headers">Время</div>
+                        <input type="text" className="popup-form__time-section-input" required placeholder="Введите название события" />
+                    </div>
+                    <div className="popup-form__description-section">
+                        <div className="popup-form__description-section-header popup-headers">Описание</div>
+                        <input type="text" className="popup-form__description-section-input" required placeholder="Коротко опишите мероприятие" />
                     </div>
                 </div>
             </div>

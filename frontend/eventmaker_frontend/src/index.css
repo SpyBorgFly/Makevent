@@ -829,9 +829,8 @@ body {
         grid-template-columns: 1fr;
     }
 
-    .widgets__finance-transaction {
+    .widgets__finance-transaction {}
 
-    }
     .widgets__finance-budgets {
         grid-template-columns: 1fr;
         gap: 18px;
@@ -868,6 +867,9 @@ body {
 }
 
 .popup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     margin: 0 auto;
     background-color: #eeeeee;
     padding: 1.75rem 1.5rem;
@@ -905,4 +907,14 @@ body {
     width: 100%;
     font-size: 12px;
     border-radius: 16px;
+}
+
+.popup-form__description-section-input {
+    padding: 6px 9px;
+    width: 100%;
+    height: 85px;
+    font-size: 12px;
+    border-radius: 16px;
+    resize: vertical;
+    overflow: scroll;
 }

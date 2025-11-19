@@ -16,7 +16,7 @@ export function Header() {
                     <li className="nav__menu-list-item"><NavLink to="/events" className="menu-link">Мероприятия</NavLink></li>
                     <li className="nav__menu-list-item"><NavLink to="#" className="menu-link">Контакты</NavLink></li>
                     <li className="nav__menu-list-item"><NavLink to="notes.html" className="menu-link">Заметки</NavLink></li>
-                    <li className="nav__menu-list-item"><NavLink to="finance.html" className="menu-link">Финансы</NavLink></li>
+                    <li className="nav__menu-list-item"><NavLink to="finance" className="menu-link">Финансы</NavLink></li>
                 </ul>
             </nav>
             <div className="header__profile">

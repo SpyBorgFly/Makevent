@@ -28,7 +28,7 @@ export function MobileHeader() {
                         </NavLink>
                     </li>
                     <li className="nav-mobile__item">
-                        <NavLink to="finance" className="nav-mobile__finance">
+                        <NavLink to="/finance" className="nav-mobile__finance">
                             <img src="images/finance.svg" alt="home" className="nav-mobile__finance-icon nav-icon" />
                                 <span className="nav-mobile__link">Финансы</span>
                         </NavLink>

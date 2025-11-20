@@ -883,10 +883,17 @@ body {
     gap: 16px;
 }
 
+.popup-form__form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .close-button {
     padding: 10px;
     font-size: 16px;
-    background-color: var(--color-bg-glass);
+    background-color: #eeeeee;
+    cursor: pointer;
 }
 
 .popup-form__header-h {
@@ -909,12 +916,41 @@ body {
     border-radius: 16px;
 }
 
+.popup-form__date-section-input {
+    width: 100%;
+    font-size: 12px;
+    font-family: "Montserrat", sans-serif;
+    padding: 6px 9px;
+    border-radius: 16px;
+}
+
+.popup-form__time-section-input {
+    width: 100%;
+    font-size: 12px;
+    font-family: "Montserrat", sans-serif;
+    padding: 6px 9px;
+    border-radius: 16px;
+}
+
 .popup-form__description-section-input {
     padding: 6px 9px;
     width: 100%;
     height: 85px;
     font-size: 12px;
     border-radius: 16px;
-    resize: vertical;
-    overflow: scroll;
+    font-family: "Montserrat", sans-serif;
+}
+
+.popup-form__button-section {
+    text-align: center;
+}
+
+.popup-form__button {
+    padding: 6px 9px;
+    font-size: 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(44, 62, 80, 0.10);
+    background-color: var(--color-blue);
+    color: white;
+    cursor: pointer;
 }

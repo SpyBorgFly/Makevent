@@ -1,52 +1,18 @@
 import { useState } from "react";
 import { Header } from "../components/Header";
 import { MobileHeader } from "../components/MobileHeader";
+import { PopUpWindow } from "../components/PopUpWindow";
 
 export function EventsPage() {
     const [isOpen, setIsOpen] = useState(false);
-
-    const popUpWindow = () => {
-        return (
-            <div className="popup-overlay">
-                <div className="popup-form">
-                    <div className="popup-form__header">
-                        <div className="popup-form__header-section">
-                            <h1 className="popup-form__header-h">
-                                Создать событие
-                            </h1>
-                            <div className="popup-form__close-button">
-                                <button onClick={() => setIsOpen(false)} className="close-button">&#10006;</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="popup-form__name-section">
-                        <div className="popup-form__name-section-header popup-headers">Название</div>
-                        <input type="text" className="popup-form__name-section-input" required placeholder="Введите название события" />
-                    </div>
-                    <div className="popup-form__data-section">
-                        <div className="popup-form__date-section-header popup-headers">Дата</div>
-                        <input type="text" className="popup-form__date-section-input" required placeholder="Введите название события" />
-                    </div>
-                    <div className="popup-form__time-section">
-                        <div className="popup-form__time-section-header popup-headers">Время</div>
-                        <input type="text" className="popup-form__time-section-input" required placeholder="Введите название события" />
-                    </div>
-                    <div className="popup-form__description-section">
-                        <div className="popup-form__description-section-header popup-headers">Описание</div>
-                        <input type="text" className="popup-form__description-section-input" required placeholder="Коротко опишите мероприятие" />
-                    </div>
-                </div>
-            </div>
-        );
-    }
 
     const handleClicker = () => {
         setIsOpen(true);
     }
 
-
     return (
         <>
+
             <Header />
             <main className="main">
                 <div className="main__container">
@@ -56,7 +22,7 @@ export function EventsPage() {
                         </div>
                         <div className="main__top-section-button">
                             <button onClick={handleClicker} className="main__top-section-btn create-event-btn">+ Создать ивент</button>
-                            {isOpen && popUpWindow()}
+                            {isOpen && <PopUpWindow setIsOpen={setIsOpen} />}
                         </div>
                     </div>
                     <section className="widgets">

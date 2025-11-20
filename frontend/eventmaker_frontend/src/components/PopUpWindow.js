@@ -1,7 +1,7 @@
 import { useState } from "react";
 import eventAPI from "../api";
 
-export function PopUpWindow({ setIsOpen }) {
+export function PopUpWindow({ setIsOpen, onEventCreated }) {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -25,8 +25,12 @@ export function PopUpWindow({ setIsOpen }) {
         setLoading(true);
         try {
             const response = await eventAPI.createEvent(formData);
-            console.log("Event successfully created", response);
             setIsOpen(false);
+
+            if (onEventCreated) {
+                onEventCreated();
+            }
+
             setFormData({
                 title: '',
                 description: '',
@@ -34,7 +38,6 @@ export function PopUpWindow({ setIsOpen }) {
                 time: '',
                 location: '52'
             });
-            alert('Событие успешно создано!');
         }
         catch (error) {
             console.error('Ошибка:', error);
@@ -111,8 +114,8 @@ export function PopUpWindow({ setIsOpen }) {
                             type="submit"
                             disabled={loading}
                             onClick={handleSubmit}>
-                                {loading ? "Создание" : "Создать"}
-                            </button>
+                            {loading ? "Создание" : "Создать"}
+                        </button>
                     </div>
                 </form>
             </div>

@@ -37,7 +37,7 @@ export function HomePage() {
                             <span className="main__top-section-text-2">{dataEvents.length} мероприят
                                 {dataEvents.length >= 2 && dataEvents.length <= 4 ? "ия" :
                                     dataEvents.length === 1 ? "ие" :
-                                        dataEvents.length === 0 && "ий"}</span>
+                                        dataEvents.length === 0 ? "ий" : "ий"}</span>
                         </div>
                         <div className="main__top-section-event-boxes">
                             <div className="main__top-section-event-box shadow-glass">
@@ -60,8 +60,6 @@ export function HomePage() {
                                 {dataEvents.map((el) => {
                                     const date = new Date(el.date);
                                     const dayOfDate = date.getDate();
-                                    const month = date.getMonth() + 1;
-                                    const year = date.getFullYear();
                                     const hours = date.getHours();
                                     const minutes = date.getMinutes();
                                     const monthNames = [
@@ -69,6 +67,7 @@ export function HomePage() {
                                         'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
                                     ];
                                     const monthName = monthNames[date.getMonth()];
+
                                     return (
                                         <Link to="#" className="widgets__card-event shadow-glass">
                                             <div className="card-event-date">

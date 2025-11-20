@@ -6,7 +6,7 @@ export function Header() {
         <div className="header__container">
             <div className="header__logo">
                 <NavLink to='/' className="header__logo-link">
-                    <img src="images/logo.png" alt="logo" className="logo" />
+                    <img src="/images/logo.png" alt="logo" className="logo" />
                     <div className="logo-name">EventPro</div>
                 </NavLink>
             </div>
@@ -22,7 +22,7 @@ export function Header() {
             <div className="header__profile">
                 <NavLink to='/' className="header__profile-link">
                     <div className="header__profile-avatar">
-                        <img src="images/default-avatar.png" alt="Avatar" className="profile-avatar" />
+                        <img src="/images/default-avatar.png" alt="Avatar" className="profile-avatar" />
                     </div>
                     <div className="header__profile-name">Николай</div>
                 </NavLink>

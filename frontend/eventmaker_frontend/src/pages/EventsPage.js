@@ -128,7 +128,7 @@ export function EventsPage() {
                                     const monthName = monthNames[date.getMonth()];
 
                                     return (
-                                        <Link to="#" key={el.id} className="widgets__event-card shadow-glass">
+                                        <Link to={`/events/${el.id}`} key={el.id} className="widgets__event-card shadow-glass">
                                             <div className="widgets__event-card-status">
                                                 <span className="card-event-status work">В работе</span>
                                                 <span className="card-event-description__datetime widgets__date">

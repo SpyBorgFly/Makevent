@@ -1,11 +1,21 @@
 from rest_framework import serializers
-from .models import Event, Task, FinanceItem
-
+from .models import Event, Task, FinanceItem, Note
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = ['id', 'title', 'description', 'date', 'location', 'created_by', 'created_at', 'updated_at']
+        fields = [
+            'id',
+            'title',
+            'description',
+            'event_day',
+            'event_time',
+            'event_type',
+            'location',  # оставь или убери по необходимости
+            'created_by',
+            'created_at',
+            'updated_at'
+        ]
         read_only_fields = ['id', 'created_by', 'created_at', 'updated_at']
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -24,7 +34,6 @@ class TaskSerializer(serializers.ModelSerializer):
         data['assignees'] = [user.id for user in instance.assignees.all()]
         return data
 
-
 class FinanceItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = FinanceItem
@@ -33,3 +42,9 @@ class FinanceItemSerializer(serializers.ModelSerializer):
             'date', 'description', 'created_by', 'created_at'
         ]
         read_only_fields = ['id', 'created_by', 'created_at']
+
+class NoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = ['id', 'title', 'description', 'tags', 'created_by', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_by', 'created_at', 'updated_at']

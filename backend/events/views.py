@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 import logging
-from .models import Event, Task, FinanceItem
-from .serializers import EventSerializer, TaskSerializer, FinanceItemSerializer
+from .models import Event, Task, FinanceItem, Note
+from .serializers import EventSerializer, TaskSerializer, FinanceItemSerializer , NoteSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -41,11 +41,13 @@ class EventViewSet(viewsets.ModelViewSet):
                 
                 # Создаем событие с системным пользователем
                 event = Event.objects.create(
-                    title=serializer.validated_data['title'],
-                    description=serializer.validated_data['description'],
-                    date=serializer.validated_data['date'],
-                    location=serializer.validated_data['location'],
-                    created_by=system_user
+                title=serializer.validated_data['title'],
+                description=serializer.validated_data['description'],
+                event_day=serializer.validated_data['event_day'],
+                event_time=serializer.validated_data['event_time'],
+                event_type=serializer.validated_data['event_type'],
+                location=serializer.validated_data.get('location', ''),  # если оставляем поле
+                created_by=system_user
                 )
                 
                 # Возвращаем сериализованные данные
@@ -143,3 +145,6 @@ class FinanceItemViewSet(viewsets.ModelViewSet):
     serializer_class = FinanceItemSerializer
 
     
+class NoteViewSet(viewsets.ModelViewSet):
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer

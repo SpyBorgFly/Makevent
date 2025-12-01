@@ -1,12 +1,28 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+import datetime
 
 class Event(models.Model):
+    EVENT_TYPES = [
+        ('conference', 'Конференция'),
+        ('teambuilding', 'Тимбилдинг'),
+        ('webinar', 'Вебинар'),
+    ]
+
     title = models.CharField(max_length=200)
     description = models.TextField()
-    date = models.DateTimeField()
-    location = models.CharField(max_length=200)
+    
+    # Новая структура даты/времени
+    event_day = models.DateField(default=datetime.date.today)
+    event_time = models.TimeField(default=datetime.time(9, 0))
+
+    # Тип мероприятия
+    event_type = models.CharField(max_length=20, choices=EVENT_TYPES)
+
+    # Убрали location и старый date
+    # location = models.CharField(max_length=200)
+    # date = models.DateTimeField()
+
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -86,3 +102,21 @@ class FinanceItem(models.Model):
 
     def __str__(self):
         return f"{self.title}: {self.amount} ({self.event.title})"
+    
+
+class Note(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='notes')
+    title = models.CharField(max_length=255)
+    content = models.TextField(blank=True)
+    tags = models.CharField(max_length=255, blank=True)  # Можно хранить через запятую
+
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.title} ({self.event.title})"
+    

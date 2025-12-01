@@ -11,7 +11,6 @@ class EventSerializer(serializers.ModelSerializer):
             'event_day',
             'event_time',
             'event_type',
-            'location',  # оставь или убери по необходимости
             'created_by',
             'created_at',
             'updated_at'
@@ -43,8 +42,20 @@ class FinanceItemSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'created_by', 'created_at']
 
+
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
-        fields = ['id', 'title', 'description', 'tags', 'created_by', 'created_at', 'updated_at']
+        fields = [
+            'id',
+            'event',
+            'title',
+            'content',
+            'tags',
+            'created_by',
+            'created_at',
+            'updated_at'
+        ]
         read_only_fields = ['id', 'created_by', 'created_at', 'updated_at']
+
+

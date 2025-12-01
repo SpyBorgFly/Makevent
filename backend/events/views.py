@@ -46,7 +46,6 @@ class EventViewSet(viewsets.ModelViewSet):
                 event_day=serializer.validated_data['event_day'],
                 event_time=serializer.validated_data['event_time'],
                 event_type=serializer.validated_data['event_type'],
-                location=serializer.validated_data.get('location', ''),  # если оставляем поле
                 created_by=system_user
                 )
                 

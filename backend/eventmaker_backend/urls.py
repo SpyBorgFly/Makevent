@@ -22,85 +22,67 @@ def home(request):
     return HttpResponse("""
     <h1>🚀 EventMaker API</h1>
     <p>Django REST API для управления событиями</p>
-    
-    <h2>📋 Доступные endpoints и методы:</h2>
+
+    <h2>📋 Доступные endpoints:</h2>
+
+    <h3>События</h3>
     <ul>
-        <li>/api/events/
-            <ul>
-                <li>GET — получить все события</li>
-                <li>POST — создать новое событие (тело запроса: title, description, date, time)</li>
-            </ul>
-        </li>
-        <li>/api/events/&lt;id&gt;/
-            <ul>
-                <li>GET — получить событие по ID</li>
-                <li>PUT — полностью обновить событие</li>
-                <li>PATCH — частично обновить событие</li>
-                <li>DELETE — удалить событие</li>
-            </ul>
-        </li>
-        <li>/api/events/&lt;id&gt;/tasks/
-            <ul>
-                <li>GET — получить задачи события</li>
-                <li>POST — создать новую задачу для события (тело запроса: title, content)</li>
-            </ul>
-        </li>
-        <li>/api/events/&lt;id&gt;/finance/
-            <ul>
-                <li>GET — получить финансовые записи события</li>
-                <li>POST — добавить запись (тело запроса: title, amount, type)</li>
-            </ul>
-        </li>
-        <li>/api/tasks/
-            <ul>
-                <li>GET — получить все задачи</li>
-                <li>POST — создать задачу</li>
-            </ul>
-        </li>
-        <li>/api/tasks/&lt;id&gt;/
-            <ul>
-                <li>GET — получить задачу по ID</li>
-                <li>PUT — полностью обновить задачу</li>
-                <li>PATCH — частично обновить задачу</li>
-                <li>DELETE — удалить задачу</li>
-            </ul>
-        </li>
-        <li>/api/finance-items/
-            <ul>
-                <li>GET — получить все финансовые записи</li>
-                <li>POST — создать запись</li>
-            </ul>
-        </li>
-        <li>/api/finance-items/&lt;id&gt;/
-            <ul>
-                <li>GET — получить запись по ID</li>
-                <li>PUT — полностью обновить запись</li>
-                <li>PATCH — частично обновить запись</li>
-                <li>DELETE — удалить запись</li>
-            </ul>
-        </li>
-        <li>/api/notes/
-            <ul>
-                <li>GET — получить все заметки</li>
-                <li>POST — создать заметку (тело запроса: event, title, content, tags)</li>
-            </ul>
-        </li>
-        <li>/api/notes/&lt;id&gt;/
-            <ul>
-                <li>GET — получить заметку по ID</li>
-                <li>PUT — полностью обновить заметку</li>
-                <li>PATCH — частично обновить заметку</li>
-                <li>DELETE — удалить заметку</li>
-            </ul>
-        </li>
-        <li>/api/events/test/
-            <ul>
-                <li>GET — тест API</li>
-            </ul>
-        </li>
-        <li>/admin/ — Django Admin панель</li>
+        <li>GET /api/events/ — список событий</li>
+        <li>POST /api/events/ — создать событие</li>
+        <li>GET /api/events/&lt;id&gt;/ — детальная информация</li>
+        <li>PUT /api/events/&lt;id&gt;/ — обновить</li>
+        <li>DELETE /api/events/&lt;id&gt;/ — удалить</li>
+        <li>GET /api/events/my_events/ — только события пользователя</li>
+        <li>GET /api/events/&lt;id&gt;/tasks/ — задачи события</li>
+        <li>GET /api/events/&lt;id&gt;/finance/ — финансы события</li>
     </ul>
-    
+
+    <h3>Задачи</h3>
+    <ul>
+        <li>GET /api/tasks/ — список задач</li>
+        <li>POST /api/tasks/ — создать</li>
+        <li>GET /api/tasks/&lt;id&gt;/ — детальная</li>
+        <li>PUT /api/tasks/&lt;id&gt;/ — обновить</li>
+        <li>DELETE /api/tasks/&lt;id&gt;/ — удалить</li>
+    </ul>
+
+    <h3>Финансовые записи</h3>
+    <ul>
+        <li>GET /api/finance-items/ — список</li>
+        <li>POST /api/finance-items/ — создать</li>
+        <li>GET /api/finance-items/&lt;id&gt;/ — детальная</li>
+        <li>PUT /api/finance-items/&lt;id&gt;/ — обновить</li>
+        <li>DELETE /api/finance-items/&lt;id&gt;/ — удалить</li>
+
+        <li><strong>GET /api/finance/summary/ — агрегированные финансовые данные</strong></li>
+    </ul>
+
+    <h3>Заметки</h3>
+    <ul>
+        <li>GET /api/notes/ — список заметок</li>
+        <li>POST /api/notes/ — создать заметку</li>
+        <li>GET /api/notes/&lt;id&gt;/ — детальная</li>
+        <li>PUT /api/notes/&lt;id&gt;/ — обновить</li>
+        <li>DELETE /api/notes/&lt;id&gt;/ — удалить</li>
+    </ul>
+
+    <h3>Сортировка событий</h3>
+    <p>Поддерживается серверная сортировка по типу и по статусу события.</p>
+    <ul>
+        <li>GET /api/events/?type=conference — фильтр по типу</li>
+        <li>GET /api/events/?type=webinar — фильтр по типу</li>
+        <li>GET /api/events/?type=teambuilding — фильтр по типу</li>
+
+        <li>GET /api/events/?status=planned — фильтр по статусу</li>
+        <li>GET /api/events/?status=active — фильтр по статусу</li>
+        <li>GET /api/events/?status=completed — фильтр по статусу</li>
+        <li>GET /api/events/?status=cancelled — фильтр по статусу</li>
+
+        <li>GET /api/events/?type=webinar&status=active — комбинированная сортировка</li>
+    </ul>
+
+    <p>Фронт может просто добавлять параметры в URL, и бэк вернёт уже отсортированные данные.</p>
+
     <p><strong>API работает на:</strong> http://127.0.0.1:8000/api/</p>
     """)
 

@@ -1,11 +1,15 @@
-from rest_framework import viewsets, status, mixins, generics
-from rest_framework.decorators import action
+from rest_framework import viewsets, status, mixins, generics, filters
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 import logging
 from .models import Event, Task, FinanceItem, Note
 from .serializers import EventSerializer, TaskSerializer, FinanceItemSerializer , NoteSerializer
+from datetime import datetime, timedelta
+from django.db.models import Sum
+from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +18,22 @@ class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    # ---- Фильтры ----
+    filterset_fields = {
+        'event_type': ['exact'],   # /api/events/?event_type=webinar
+        'status': ['exact'],       # /api/events/?status=planning
+    }
+
+    # ---- Сортировка ----
+    ordering_fields = [
+        'start_date',
+        'end_date',
+        'title',
+        'event_type',
+        'status',
+        'updated_at',
+    ]
     def list(self, request):
         """Получить список всех событий"""
         events = Event.objects.all()
@@ -147,3 +167,68 @@ class FinanceItemViewSet(viewsets.ModelViewSet):
 class NoteViewSet(viewsets.ModelViewSet):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def finance_summary(request):
+    user = request.user
+
+    # Все транзакции пользователя
+    qs = FinanceItem.objects.filter(event__created_by=user)
+
+    # Суммы
+    total_income = qs.filter(type="income").aggregate(total=Sum("amount"))["total"] or 0
+    total_expenses = qs.filter(type="expense").aggregate(total=Sum("amount"))["total"] or 0
+    net_total = total_income - total_expenses
+
+    # Даты для анализа по месяцам
+    today = datetime.today()
+    month_ago = today - timedelta(days=30)
+    prev_month_start = today - timedelta(days=60)
+    prev_month_end = today - timedelta(days=30)
+
+    # Текущий месяц
+    month_income = qs.filter(type="income", date__gte=month_ago).aggregate(total=Sum("amount"))["total"] or 0
+    month_expenses = qs.filter(type="expense", date__gte=month_ago).aggregate(total=Sum("amount"))["total"] or 0
+
+    # Прошлый месяц (для процента изменения)
+    prev_month_income = qs.filter(type="income", date__gte=prev_month_start, date__lt=prev_month_end).aggregate(total=Sum("amount"))["total"] or 0
+    prev_month_expenses = qs.filter(type="expense", date__gte=prev_month_start, date__lt=prev_month_end).aggregate(total=Sum("amount"))["total"] or 0
+
+    # Изменение в процентах
+    def percent_change(current, previous):
+        if previous == 0:
+            return 0
+        return round((current - previous) / previous, 3)
+
+    month_income_change = percent_change(month_income, prev_month_income)
+    month_expenses_change = percent_change(month_expenses, prev_month_expenses)
+
+    # Бюджеты по событиям
+    events_data = []
+    for event in Event.objects.filter(created_by=user):
+        income = event.finance_items.filter(type="income").aggregate(total=Sum("amount"))["total"] or 0
+        expenses = event.finance_items.filter(type="expense").aggregate(total=Sum("amount"))["total"] or 0
+        budget = income - expenses
+        events_data.append({
+            "event_id": event.id,
+            "title": event.title,
+            "budget": budget if (income or expenses) else None
+        })
+
+    return Response({
+        "total_income": total_income,
+        "total_expenses": total_expenses,
+        "net_total": net_total,
+
+        "month_income": month_income,
+        "month_income_change": month_income_change,
+
+        "month_expenses": month_expenses,
+        "month_expenses_change": month_expenses_change,
+
+        "events": events_data,
+    })
+
+

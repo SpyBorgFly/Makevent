@@ -11,6 +11,7 @@ class EventSerializer(serializers.ModelSerializer):
             'event_day',
             'event_time',
             'event_type',
+            'status',
             'created_by',
             'created_at',
             'updated_at'

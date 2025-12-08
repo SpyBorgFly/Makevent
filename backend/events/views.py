@@ -21,19 +21,20 @@ class EventViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     # ---- Фильтры ----
     filterset_fields = {
-        'event_type': ['exact'],   # /api/events/?event_type=webinar
-        'status': ['exact'],       # /api/events/?status=planning
+        'event_type': ['exact'],
+        'status': ['exact'],
     }
 
     # ---- Сортировка ----
     ordering_fields = [
-        'start_date',
-        'end_date',
-        'title',
-        'event_type',
-        'status',
-        'updated_at',
-    ]
+    'title',
+    'event_type',
+    'status',
+    'event_day',
+    'event_time',
+    'updated_at',
+    'created_at',
+]
     def list(self, request):
         """Получить список всех событий"""
         events = Event.objects.all()

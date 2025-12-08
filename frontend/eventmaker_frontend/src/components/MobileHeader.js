@@ -35,7 +35,7 @@ export function MobileHeader() {
                             <span className="nav-mobile__create-text">Новое событие</span>
                         </li>
                         <li className="nav-mobile__item">
-                            <NavLink to="" className="nav-mobile__notes">
+                            <NavLink to="/notes" className="nav-mobile__notes">
                                 <img src="/images/notes-icon.svg" alt="home" className="nav-mobile__notes-icon nav-icon" />
                                 <span className="nav-mobile__link">Заметки</span>
                             </NavLink>

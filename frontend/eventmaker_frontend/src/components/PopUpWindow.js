@@ -138,9 +138,9 @@ export function PopUpWindow({ setIsOpen, onEventCreated }) {
                             required
                         >
                             <option value="">Не выбрано</option>
-                            <option value="конференция">Конференция</option>
-                            <option value="тимбилдинг">Тимбилдинг</option>
-                            <option value="вебинар">Вебинар</option>
+                            <option value="conference">Конференция</option>
+                            <option value="teambuilding">Тимбилдинг</option>
+                            <option value="webinar">Вебинар</option>
                         </select>
                     </div>
                     <div className="popup-form__description-section">

@@ -1108,3 +1108,30 @@ body {
     font-size: 14px;
     padding: 6px 9px;
 }
+
+/*-----------------------------------------EventPage-------------------------------------*/
+
+.event__title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.event__description-header {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 5px;
+}
+
+.event__description {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.header-event__section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

@@ -37,8 +37,18 @@ export function EventPage() {
             <Header />
             <main className="main">
                 <div className="main__container">
-                    <h1>{dataEvent.title}</h1>
-                    <p>{dataEvent.description}</p>
+                    <div className="header-event__section">
+                        <h1 className="event__title">{dataEvent.title}</h1>
+                        <span className={`card-event-status ${dataEvent.status==='planned' ? 'error' : ""}`}>
+                            {dataEvent.status==='planned' ? 'Планируется' : ""}
+                            </span>
+                    </div>
+
+                    <section className="event__widget">
+                        <div className="event__description-header">Описание</div>
+                        <p className="event__description">{dataEvent.description}</p>
+                    </section>
+                    <section className="task__widget"></section>
                 </div>
             </main>
             <MobileHeader />

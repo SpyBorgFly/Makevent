@@ -132,7 +132,9 @@ export function EventsPage() {
                                     return (
                                         <Link to={`/events/${el.id}`} key={el.id} className="widgets__event-card shadow-glass">
                                             <div className="widgets__event-card-status">
-                                                <span className="card-event-status work">В работе</span>
+                                                <span className={`card-event-status ${el.status === 'planned' ? 'error' : ''}`}>
+                                                    {el.status === 'planned' ? 'Планируется' : ''}
+                                                </span>
                                                 <span className="card-event-description__datetime widgets__date">
                                                     {dayOfDate} {monthName}, {hours}:{minutes}
                                                 </span>

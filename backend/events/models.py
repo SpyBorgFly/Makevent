@@ -9,9 +9,23 @@ class Event(models.Model):
         ('webinar', 'Вебинар'),
     ]
 
+    # ---------- Статусы события ----------
+    STATUS_PLANNED = 'planned'
+    STATUS_IN_PROGRESS = 'in_progress'
+    STATUS_DONE = 'done'
+    STATUS_CANCELLED = 'cancelled'
+
+    STATUS_CHOICES = [
+        (STATUS_PLANNED, 'Запланировано'),
+        (STATUS_IN_PROGRESS, 'В работе'),
+        (STATUS_DONE, 'Завершено'),
+        (STATUS_CANCELLED, 'Отменено'),
+    ]
+
+    # ---------- Поля ----------
     title = models.CharField(max_length=200)
     description = models.TextField()
-    
+
     # Новая структура даты/времени
     event_day = models.DateField(default=datetime.date.today)
     event_time = models.TimeField(default=datetime.time(9, 0))
@@ -19,19 +33,22 @@ class Event(models.Model):
     # Тип мероприятия
     event_type = models.CharField(max_length=20, choices=EVENT_TYPES)
 
-    # Убрали location и старый date
-    # location = models.CharField(max_length=200)
-    # date = models.DateTimeField()
+    # Новый статус события
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=STATUS_PLANNED
+    )
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.title
-
     class Meta:
         ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
 
 class Task(models.Model):
     STATUS_TODO = 'todo'

@@ -71,7 +71,7 @@ export function HomePage() {
                                     const monthName = monthNames[date.getMonth()];
 
                                     return (
-                                        <Link to={`/events/<${el.id}>`} key={el.id} className="widgets__card-event shadow-glass">
+                                        <Link to={`/events/${el.id}`} key={el.id} className="widgets__card-event shadow-glass">
                                             <div className="card-event-date">
                                                 <span className="card-event-date__day">{dayOfDate}</span>
                                                 <span className="card-event-date__month">{monthName}</span>

@@ -22,8 +22,7 @@ export function PopUpWindow({ setIsOpen, onEventCreated }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        // Валидация
+
         if (!formData.title.trim()) {
             alert("Введите название события");
             return;
@@ -44,7 +43,6 @@ export function PopUpWindow({ setIsOpen, onEventCreated }) {
         setLoading(true);
         
         try {
-            // Создаем объект ТОЛЬКО с нужными полями
             const dataToSend = {
                 title: formData.title,
                 description: formData.description,
@@ -64,7 +62,6 @@ export function PopUpWindow({ setIsOpen, onEventCreated }) {
                 onEventCreated();
             }
 
-            // Сброс формы
             setFormData({
                 title: '',
                 description: '',

@@ -54,50 +54,60 @@ export function FinancePage() {
                             </div>
                         </div>
                         <div className="widgets__finance-transactions shadow-glass">
-                            <h2 className="widgets__finance-transactions-header">Последние транзакции</h2>
-                            <table className="finance-transactions-table">
-                                <tr className="table__header-row">
-                                    <td className="table__item-header">Дата</td>
-                                    <td className="table__item-header">Событие</td>
-                                    <td className="table__item-header">Описание</td>
-                                    <td className="table__item-header">Сумма</td>
-                                    <td className="table__item-header">Статус</td>
-                                </tr>
-                                <tr className="table__list-row">
-                                    <td className="table__item table-date-section">22.03.2024</td>
-                                    <td className="table__item table-event-section">Сессия партнеров</td>
-                                    <td className="table__item table-description-section">Оплата площадки</td>
-                                    <td className="table__item table-finance-section">-350 000 ₽</td>
-                                    <td className="table__item table-status-section">
-                                        <span className="card-event-status notes">
-                                            Проведено
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr className="table__list-row">
-                                    <td className="table__item table-date-section">20.03.2024</td>
-                                    <td className="table__item table-event-section">Весенний вебинар</td>
-                                    <td className="table__item table-description-section">Поступление спонсорских</td>
-                                    <td className="table__item table-finance-section">+120 000 ₽</td>
-                                    <td className="table__item table-status-section">
-                                        <span className="card-event-status notes">
-                                            Проведено
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr className="table__list-row">
-                                    <td className="table__item table-date-section">18.03.2024</td>
-                                    <td className="table__item table-event-section">Team Building 2024</td>
-                                    <td className="table__item table-description-section">Бронирование транспорта</td>
-                                    <td className="table__item table-finance-section">-45 000 ₽</td>
-                                    <td className="table__item table-status-section">
-                                        <span className="card-event-status error">
-                                            В ожидании
-                                        </span>
-                                    </td>
-                                </tr>
-                            </table>
+    <h2 className="widgets__finance-transactions-header">Последние транзакции</h2>
+    
+    <div className="table-wrapper">
+        <table className="finance-transactions-table">
+            <thead>
+                <tr className="table__header-row">
+                    <th className="table__item-header">Дата</th>
+                    <th className="table__item-header">Событие</th>
+                    <th className="table__item-header">Описание</th>
+                    <th className="table__item-header">Сумма</th>
+                    <th className="table__item-header">Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr className="table__list-row">
+                    <td className="table__item table-date-section">22.03.2024</td>
+                    <td className="table__item table-event-section">Сессия партнеров</td>
+                    <td className="table__item table-description-section">Оплата площадки</td>
+                    <td className="table__item table-finance-section red">-350 000 ₽</td>
+                    <td className="table__item table-status-section">
+                        <div className="status-with-dot">
+                            <span className="status-dot blue-dot"></span>
+                            <span className="status-text">Проведено</span>
                         </div>
+                    </td>
+                </tr>
+                <tr className="table__list-row">
+                    <td className="table__item table-date-section">20.03.2024</td>
+                    <td className="table__item table-event-section">Весенний вебинар</td>
+                    <td className="table__item table-description-section">Поступление спонсорских</td>
+                    <td className="table__item table-finance-section green">+120 000 ₽</td>
+                    <td className="table__item table-status-section">
+                        <div className="status-with-dot">
+                            <span className="status-dot green-dot"></span>
+                            <span className="status-text">Проведено</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr className="table__list-row">
+                    <td className="table__item table-date-section">18.03.2024</td>
+                    <td className="table__item table-event-section">Team Building 2024</td>
+                    <td className="table__item table-description-section">Бронирование транспорта</td>
+                    <td className="table__item table-finance-section red">-45 000 ₽</td>
+                    <td className="table__item table-status-section">
+                        <div className="status-with-dot">
+                            <span className="status-dot orange-dot"></span>
+                            <span className="status-text">В ожидании</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
                     </section>
                 </div>
             </main>

@@ -35,8 +35,12 @@ export function EventPage() {
     return (
         <>
             <Header />
-            <h1>{dataEvent.title}</h1>
-            <p>{dataEvent.description}</p>
+            <main className="main">
+                <div className="main__container">
+                    <h1>{dataEvent.title}</h1>
+                    <p>{dataEvent.description}</p>
+                </div>
+            </main>
             <MobileHeader />
         </>
     );

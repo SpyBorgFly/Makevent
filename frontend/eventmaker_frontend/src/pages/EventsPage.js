@@ -117,10 +117,12 @@ export function EventsPage() {
 
                             <div className="widgets__events-section">
                                 {filteredEvents.map((el) => {
-                                    const date = new Date(el.date);
+                                    const date = new Date(el.event_day);
+                                    const timeString = el.event_time;
                                     const dayOfDate = date.getDate();
-                                    const hours = date.getHours().toString().padStart(2, '0');
-                                    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+                                    const [hours, minutes, seconds] = timeString.split(':');
+                                    console.log()
                                     const monthNames = [
                                         'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
                                         'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'

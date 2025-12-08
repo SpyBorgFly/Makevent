@@ -58,10 +58,12 @@ export function HomePage() {
                             </div>
                             <div className="widgets__card-event-list">
                                 {dataEvents.map((el) => {
-                                    const date = new Date(el.date);
+                                    const date = new Date(el.event_day);
+                                    const timeString = el.event_time;
                                     const dayOfDate = date.getDate();
-                                    const hours = date.getHours();
-                                    const minutes = date.getMinutes();
+
+                                    const [hours, minutes, seconds] = timeString.split(':');
+                                    console.log()
                                     const monthNames = [
                                         'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
                                         'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
@@ -76,7 +78,7 @@ export function HomePage() {
                                             </div>
                                             <div className="card-event-description">
                                                 <span className="card-event-description__header">{el.title}</span>
-                                                <span className="card-event-description__datetime">{dayOfDate} {monthName}, 0{hours}:{minutes}0</span>
+                                                <span className="card-event-description__datetime">{dayOfDate} {monthName}, {hours}:{minutes}</span>
                                             </div>
                                             <div className="card-event-status work">
                                                 В работе

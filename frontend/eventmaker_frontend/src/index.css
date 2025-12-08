@@ -954,3 +954,9 @@ body {
     color: white;
     cursor: pointer;
 }
+
+.popup-selector {
+    width: 100%;
+    font-size: 14px;
+    padding: 6px 9px;
+}

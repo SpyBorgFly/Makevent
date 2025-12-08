@@ -5,9 +5,9 @@ export function PopUpWindow({ setIsOpen, onEventCreated }) {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        date: '',
-        time: '',
-        location: '52'
+        event_day: '',
+        event_time: '',
+        event_type: '',
     });
 
     const [loading, setLoading] = useState(false);
@@ -22,26 +22,60 @@ export function PopUpWindow({ setIsOpen, onEventCreated }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        // Валидация
+        if (!formData.title.trim()) {
+            alert("Введите название события");
+            return;
+        }
+        if (!formData.event_day) {
+            alert("Выберите дату");
+            return;
+        }
+        if (!formData.event_time) {
+            alert("Выберите время");
+            return;
+        }
+        if (!formData.event_type) {
+            alert("Выберите тип события");
+            return;
+        }
+
         setLoading(true);
+        
         try {
-            const response = await eventAPI.createEvent(formData);
+            // Создаем объект ТОЛЬКО с нужными полями
+            const dataToSend = {
+                title: formData.title,
+                description: formData.description,
+                event_day: formData.event_day,
+                event_time: formData.event_time + ":00",
+                event_type: formData.event_type
+            };
+            
+            console.log("Отправляемые данные:", dataToSend);
+            
+            const response = await eventAPI.createEvent(dataToSend);
+            
+            console.log("Успешно создано:", response);
             setIsOpen(false);
 
             if (onEventCreated) {
                 onEventCreated();
             }
 
+            // Сброс формы
             setFormData({
                 title: '',
                 description: '',
-                date: '',
-                time: '',
-                location: '52'
+                event_day: '',
+                event_time: '',
+                event_type: '',
             });
-        }
-        catch (error) {
+            
+        } catch (error) {
             console.error('Ошибка:', error);
-            alert('Произошла ошибка при создании события');
+            alert('Произошла ошибка при создании события: ' + error.message);
         } finally {
             setLoading(false);
         }
@@ -62,7 +96,7 @@ export function PopUpWindow({ setIsOpen, onEventCreated }) {
                         </div>
                     </div>
                 </div>
-                <form className="popup-form__form" action="" method="post">
+                <form className="popup-form__form" onSubmit={handleSubmit}>
                     <div className="popup-form__name-section">
                         <div className="popup-form__name-section-header popup-headers">Название</div>
                         <input
@@ -77,34 +111,45 @@ export function PopUpWindow({ setIsOpen, onEventCreated }) {
                     <div className="popup-form__data-section">
                         <div className="popup-form__date-section-header popup-headers">Дата</div>
                         <input
-                            name="date"
+                            name="event_day"
                             type="date"
                             className="popup-form__date-section-input"
-                            value={formData.date}
+                            value={formData.event_day}
                             onChange={handleInputChange}
-                            required
-                            placeholder="Введите название события" />
-                    </div>
+                            required />
+                    </div>                    
                     <div className="popup-form__time-section">
                         <div className="popup-form__time-section-header popup-headers">Время</div>
                         <input
-                            name="time"
+                            name="event_time"
                             type="time"
                             className="popup-form__time-section-input"
-                            value={formData.time}
+                            value={formData.event_time}
+                            onChange={handleInputChange}
+                            required />
+                    </div>
+                    <div className="popup-form__type-section">
+                        <div className="popup-form__type-section-header popup-headers">Тип события</div>
+                        <select
+                            name="event_type"
+                            className="widgets__filter popup-selector"
+                            value={formData.event_type}
                             onChange={handleInputChange}
                             required
-                            placeholder="Введите название события" />
+                        >
+                            <option value="">Не выбрано</option>
+                            <option value="конференция">Конференция</option>
+                            <option value="тимбилдинг">Тимбилдинг</option>
+                            <option value="вебинар">Вебинар</option>
+                        </select>
                     </div>
                     <div className="popup-form__description-section">
                         <div className="popup-form__description-section-header popup-headers">Описание</div>
                         <textarea
                             name="description"
-                            type="text"
                             className="popup-form__description-section-input"
                             value={formData.description}
                             onChange={handleInputChange}
-                            required
                             rows="4"
                             placeholder="Коротко опишите мероприятие" />
                     </div>
@@ -113,8 +158,8 @@ export function PopUpWindow({ setIsOpen, onEventCreated }) {
                             className="popup-form__button"
                             type="submit"
                             disabled={loading}
-                            onClick={handleSubmit}>
-                            {loading ? "Создание" : "Создать"}
+                        >
+                            {loading ? "Создание..." : "Создать"}
                         </button>
                     </div>
                 </form>

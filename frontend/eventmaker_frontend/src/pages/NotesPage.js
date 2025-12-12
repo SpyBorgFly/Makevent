@@ -1,8 +1,15 @@
 import { Link } from "react-router";
 import { Header } from "../components/Header";
 import { MobileHeader } from "../components/MobileHeader";
+import { NotePopUp } from "../components/NotePopUp";
+import { useState } from "react";
 
 export function NotesPage() {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleClicker = () => {
+        setIsOpen(true);
+    }
     return (
         <>
             <Header />
@@ -13,7 +20,7 @@ export function NotesPage() {
                             <h1 className="main__h1 h1-notes">Заметки</h1>
                         </div>
                         <div className="main__top-section-button">
-                            <button className="main__top-section-btn create-event-btn">+ Новая заметка</button>
+                            <button className="main__top-section-btn create-event-btn" onClick={handleClicker}>+ Новая заметка</button>
                         </div>
                     </section>
                     <section className="notes-widgets">
@@ -43,6 +50,7 @@ export function NotesPage() {
                 </div>
             </main>
             <MobileHeader />
+            {isOpen && <NotePopUp setIsOpen={setIsOpen} />}
         </>
     );
 }

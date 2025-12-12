@@ -72,6 +72,7 @@ export function EventPage() {
                 </div>
             </main>
             <MobileHeader />
+            
         </>
     );
 }

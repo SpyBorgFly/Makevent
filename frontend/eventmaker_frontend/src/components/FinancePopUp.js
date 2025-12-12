@@ -1,4 +1,3 @@
-// components/FinancePopUp.js
 import { useState } from "react";
 import eventAPI from "../api";
 
@@ -34,7 +33,6 @@ export function FinancePopUp({ setIsOpen, eventId, onFinanceCreated }) {
 
         try {
             const dataToSend = {
-                event: eventId,
                 title: formData.title,
                 amount: parseFloat(formData.amount),
                 type: formData.type,
@@ -43,7 +41,8 @@ export function FinancePopUp({ setIsOpen, eventId, onFinanceCreated }) {
                 description: formData.description,
             };
 
-            await eventAPI.createFinanceItem(dataToSend);
+            // ГЛАВНОЕ изменение — вот этот вызов:
+            await eventAPI.createFinanceForEvent(eventId, dataToSend);
 
             setIsOpen(false);
             onFinanceCreated && onFinanceCreated();
@@ -59,7 +58,7 @@ export function FinancePopUp({ setIsOpen, eventId, onFinanceCreated }) {
 
         } catch (error) {
             console.error(error);
-            alert("Ошибка при добавлении транзакции");
+            alert("Ошибка при добавлении транзакции: " + error.message);
         } finally {
             setLoading(false);
         }
@@ -80,7 +79,7 @@ export function FinancePopUp({ setIsOpen, eventId, onFinanceCreated }) {
                 </div>
 
                 <form className="popup-form__form" onSubmit={handleSubmit}>
-
+                    
                     <div className="popup-form__name-section">
                         <div className="popup-headers">Название</div>
                         <input
@@ -89,7 +88,6 @@ export function FinancePopUp({ setIsOpen, eventId, onFinanceCreated }) {
                             value={formData.title}
                             onChange={handleInputChange}
                             className="popup-form__name-section-input"
-                            placeholder="Название операции"
                             required
                         />
                     </div>
@@ -115,7 +113,6 @@ export function FinancePopUp({ setIsOpen, eventId, onFinanceCreated }) {
                             value={formData.amount}
                             onChange={handleInputChange}
                             className="popup-form__time-section-input"
-                            placeholder="0.00"
                             required
                         />
                     </div>
@@ -143,7 +140,6 @@ export function FinancePopUp({ setIsOpen, eventId, onFinanceCreated }) {
                             value={formData.category}
                             onChange={handleInputChange}
                             className="popup-form__name-section-input"
-                            placeholder="Пример: еда, транспорт..."
                         />
                     </div>
 
@@ -155,7 +151,6 @@ export function FinancePopUp({ setIsOpen, eventId, onFinanceCreated }) {
                             onChange={handleInputChange}
                             className="popup-form__description-section-input"
                             rows="3"
-                            placeholder="Опционально"
                         />
                     </div>
 

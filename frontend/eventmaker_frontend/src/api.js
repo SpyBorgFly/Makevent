@@ -75,22 +75,22 @@ export const eventAPI = {
     getMyTasksByEvent: (id) => apiRequest(`/events/${id}/tasks/`, { method: 'GET' }),
 
     //Получить все заметки
-    getAllNotes: () => apiRequest('/notes/', { method: 'GET' }),
+     getAllNotes: () => apiRequest('/notes/', { method: 'GET' }),
 
-    // Создать заметку
-    createNote: (eventData) => apiRequest('/notes/', { method: 'POST', data: eventData }),
+    createNote: (eventId, data) =>
+        apiRequest('/notes/', {
+            method: 'POST',
+            data: { ...data, event: eventId }, // ← важно
+        }),
 
-    // Получить конкретную заметку
     getMyNote: (id) => apiRequest(`/notes/${id}/`, { method: 'GET' }),
-
-    // Удалить конкретную заметку
     deleteMyNote: (id) => apiRequest(`/notes/${id}/`, { method: 'DELETE' }),
 
-    // CREATE finance
-    createFinanceItem: (data) => apiRequest('/finance-items/', {
-    method: 'POST',
-    data: data,
-}),
+    createFinanceForEvent: (eventId, data) =>
+        apiRequest(`/events/${eventId}/finance/`, {
+            method: 'POST',
+            data: { ...data, event: eventId }, // ← ключевая правка
+        }),
 };
 
 export default eventAPI;

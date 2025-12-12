@@ -7,10 +7,21 @@ import { MobileHeader } from "../components/MobileHeader";
 export function EventPage() {
     const { eventId } = useParams();
     const [dataEvent, setDataEvent] = useState(null);
+    const [taskList, setTaskList] = useState(null);
 
     const fetchData = async (id) => {
         try {
             const response = await eventAPI.getEvent(id);
+            return response;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
+    const fetchDataTasks = async (id) => {
+        try {
+            const response = await eventAPI.getMyTasksByEvent(id);
             return response;
         } catch (error) {
             console.log(error);
@@ -23,6 +34,8 @@ export function EventPage() {
             if (eventId) {
                 const data = await fetchData(eventId);
                 setDataEvent(data);
+                const taskData = await fetchDataTasks(eventId);
+                setTaskList(taskData);
             }
         };
         loadData();
@@ -39,9 +52,9 @@ export function EventPage() {
                 <div className="main__container">
                     <div className="header-event__section">
                         <h1 className="event__title">{dataEvent.title}</h1>
-                        <span className={`card-event-status ${dataEvent.status==='planned' ? 'error' : ""}`}>
-                            {dataEvent.status==='planned' ? 'Планируется' : ""}
-                            </span>
+                        <span className={`card-event-status ${dataEvent.status === 'planned' ? 'error' : ""}`}>
+                            {dataEvent.status === 'planned' ? 'Планируется' : ""}
+                        </span>
                     </div>
 
                     <section className="event__widget">
@@ -52,9 +65,7 @@ export function EventPage() {
                         <div className="task__header">
                             Задачи:
                         </div>
-                        <div className="task__list">
-                            
-                        </div>
+                        <div className="task__list">{taskList.length === 0 ? <div className="tasks__none">Задач нет</div> : null}</div>
                     </section>
                 </div>
             </main>

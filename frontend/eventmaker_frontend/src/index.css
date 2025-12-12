@@ -1145,3 +1145,9 @@ body {
     font-weight: 700;
     color: var(--color-text-primary);
 }
+
+.tasks__none {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+}

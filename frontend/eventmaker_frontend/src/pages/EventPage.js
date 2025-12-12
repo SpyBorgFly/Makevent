@@ -65,7 +65,11 @@ export function EventPage() {
                         <div className="task__header">
                             Задачи:
                         </div>
-                        <div className="task__list">{taskList.length === 0 ? <div className="tasks__none">Задач нет</div> : null}</div>
+                        <div className="task__list">
+                            {taskList.length === 0 ?
+                                <div className="tasks__none">Задач нет</div> :
+                                taskList.map()}
+                                </div>
                     </section>
                 </div>
             </main>

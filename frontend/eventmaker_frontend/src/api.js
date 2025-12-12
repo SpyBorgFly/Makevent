@@ -84,7 +84,9 @@ export const eventAPI = {
     getMyNote: (id) => apiRequest(`/notes/${id}/`, { method: 'GET' }),
 
     // Удалить конкретную заметку
-    deleteMyNote: (id) => apiRequest(`/notes/${id}/`, { method: 'DELETE' })
+    deleteMyNote: (id) => apiRequest(`/notes/${id}/`, { method: 'DELETE' }),
+
+    
 };
 
 export default eventAPI;

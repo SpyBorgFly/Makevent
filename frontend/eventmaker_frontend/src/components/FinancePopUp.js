@@ -189,7 +189,6 @@ export function FinancePopUp({ setIsOpen, eventId, onFinanceCreated }) {
                         <div className="popup-headers">Категория</div>
                         <input
                             name="category"
-                            type="text"
                             value={formData.category}
                             onChange={handleInputChange}
                             className="popup-form__name-section-input"

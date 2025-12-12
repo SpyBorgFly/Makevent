@@ -63,7 +63,7 @@ export const eventAPI = {
     getMyEvents: () => apiRequest('/events/my_events/', { method: 'GET' }),
 
     // Получить все задачи
-    getMyTasks: () => apiRequest('/'),
+    getMyTasks: () => apiRequest('/tasks/', {method: 'GET'}),
 
     // Создать задачу
     createTask: (eventData) => apiRequest('/tasks/', { method: 'POST', data: eventData }),
@@ -84,7 +84,12 @@ export const eventAPI = {
         }),
 
     getMyNote: (id) => apiRequest(`/notes/${id}/`, { method: 'GET' }),
+
     deleteMyNote: (id) => apiRequest(`/notes/${id}/`, { method: 'DELETE' }),
+
+    
+    // Получить все транзакции
+    getMyFinances: () => apiRequest('/finance-items/', {method: 'GET'}),
 
     createFinanceForEvent: (eventId, data) =>
         apiRequest(`/events/${eventId}/finance/`, {

@@ -1,10 +1,30 @@
 import { Header } from "../components/Header"
 import { MobileHeader } from "../components/MobileHeader"
 import { FinancePopUp } from "../components/FinancePopUp";
-import { useState } from "react";
+import eventAPI from "../api";
+import { useState, useEffect } from "react";
 
 export function FinancePage() {
     const [isOpen, setIsOpen] = useState(false);
+    const [dataFinances, setDataFinances] = useState([]);
+
+    const fetchData = async () => {
+        try {
+            const response = await eventAPI.getMyFinances();
+            return response;
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
+    }
+
+    useEffect(() => {
+        const loadData = async () => {
+            const data = await fetchData();
+            setDataFinances(data)
+        };
+        loadData();
+    }, [])
 
     const handleClicker = () => {
         setIsOpen(true);
@@ -71,46 +91,29 @@ export function FinancePage() {
                                             <th className="table__item-header">Событие</th>
                                             <th className="table__item-header">Описание</th>
                                             <th className="table__item-header">Сумма</th>
-                                            <th className="table__item-header">Статус</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr className="table__list-row">
-                                            <td className="table__item table-date-section">22.03.2024</td>
-                                            <td className="table__item table-event-section">Сессия партнеров</td>
-                                            <td className="table__item table-description-section">Оплата площадки</td>
-                                            <td className="table__item table-finance-section red">-350 000 ₽</td>
-                                            <td className="table__item table-status-section">
-                                                <div className="status-with-dot">
-                                                    <span className="status-dot blue-dot"></span>
-                                                    <span className="status-text">Проведено</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr className="table__list-row">
-                                            <td className="table__item table-date-section">20.03.2024</td>
-                                            <td className="table__item table-event-section">Весенний вебинар</td>
-                                            <td className="table__item table-description-section">Поступление спонсорских</td>
-                                            <td className="table__item table-finance-section green">+120 000 ₽</td>
-                                            <td className="table__item table-status-section">
-                                                <div className="status-with-dot">
-                                                    <span className="status-dot green-dot"></span>
-                                                    <span className="status-text">Проведено</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr className="table__list-row">
-                                            <td className="table__item table-date-section">18.03.2024</td>
-                                            <td className="table__item table-event-section">Team Building 2024</td>
-                                            <td className="table__item table-description-section">Бронирование транспорта</td>
-                                            <td className="table__item table-finance-section red">-45 000 ₽</td>
-                                            <td className="table__item table-status-section">
-                                                <div className="status-with-dot">
-                                                    <span className="status-dot orange-dot"></span>
-                                                    <span className="status-text">В ожидании</span>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                        {!dataFinances && <div>Транзакций Нету</div>}
+                                        {dataFinances?.map(el => {
+                                            function formatDate(dateString) {
+                                                const [year, month, day] = dateString.split('-');
+                                                return `${day}.${month}.${year}`;
+                                            }
+
+                                            const resultDate = formatDate(el.date);
+                                            return (
+                                                <tr className="table__list-row" key={el.id}>
+                                                    <td className="table__item table-date-section">{resultDate}</td>
+                                                    <td className="table__item table-event-section">{el.event}</td>
+                                                    <td className="table__item table-description-section">{el.description}</td>
+                                                    <td className={`table__item table-finance-section 
+                                                        ${el.type === 'expense' ? 'red' : 'green'}`}>
+                                                        {el.type === 'expense' ? '-' + el.amount : '+' + el.amount} ₽
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
                             </div>
@@ -119,7 +122,7 @@ export function FinancePage() {
                 </div>
             </main>
             <MobileHeader />
-            {isOpen && <FinancePopUp setIsOpen={setIsOpen}/>}
+            {isOpen && <FinancePopUp setIsOpen={setIsOpen} />}
         </>
     );
 }

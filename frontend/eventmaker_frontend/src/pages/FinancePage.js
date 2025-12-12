@@ -26,9 +26,22 @@ export function FinancePage() {
         loadData();
     }, [])
 
+    const loadFinances = async () => {
+        try {
+            const data = await eventAPI.getMyFinances();
+            setDataFinances(data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const handleClicker = () => {
         setIsOpen(true);
     }
+
+    const handleFinanceCreated = () => {
+        loadFinances();
+    };
     return (
         <>
             <Header />
@@ -122,7 +135,7 @@ export function FinancePage() {
                 </div>
             </main>
             <MobileHeader />
-            {isOpen && <FinancePopUp setIsOpen={setIsOpen} />}
+            {isOpen && <FinancePopUp setIsOpen={setIsOpen} onFinanceCreated={handleFinanceCreated} />}
         </>
     );
 }

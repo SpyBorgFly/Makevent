@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import eventAPI from "../api";
 
-export function FinancePopUp({ setIsOpen, eventId, onFinanceCreated }) {
+export function FinancePopUp({ setIsOpen, onFinanceCreated, eventId }) {
 
     const [events, setEvents] = useState([]);
     const [loadingEvents, setLoadingEvents] = useState(true);

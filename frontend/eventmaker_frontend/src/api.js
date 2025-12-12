@@ -65,6 +65,15 @@ export const eventAPI = {
     // Получить все задачи
     getMyTasks: () => apiRequest('/'),
 
+    // Создать задачу
+    createTask: (eventData) => apiRequest('/tasks/', { method: 'POST', data: eventData }),
+
+    // Получить конкретную задачу
+    getMyTask: (id) => apiRequest(`/tasks/${id}/`, { method: 'GET' }),
+
+    // Получить конкретную задачу у события
+    getMyTasksByEvent: (id) => apiRequest(`/events/${id}/tasks/`, { method: 'GET' }),
+
     //Получить все заметки
     getAllNotes: () => apiRequest('/notes/', { method: 'GET' }),
 
@@ -76,8 +85,6 @@ export const eventAPI = {
 
     // Удалить конкретную заметку
     deleteMyNote: (id) => apiRequest(`/notes/${id}/`, { method: 'DELETE' })
-
-    
 };
 
 export default eventAPI;

@@ -119,7 +119,7 @@ export function FinancePage() {
                 </div>
             </main>
             <MobileHeader />
-            {setIsOpen ? <FinancePopUp />: null}
+            {isOpen && <FinancePopUp setIsOpen={setIsOpen}/>}
         </>
     );
 }

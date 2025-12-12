@@ -86,7 +86,11 @@ export const eventAPI = {
     // Удалить конкретную заметку
     deleteMyNote: (id) => apiRequest(`/notes/${id}/`, { method: 'DELETE' }),
 
-    
+    // CREATE finance
+    createFinanceItem: (data) => apiRequest('/finance-items/', {
+    method: 'POST',
+    data: data,
+}),
 };
 
 export default eventAPI;

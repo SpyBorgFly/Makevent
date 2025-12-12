@@ -45,10 +45,17 @@ export function EventPage() {
                     </div>
 
                     <section className="event__widget">
-                        <div className="event__description-header">Описание</div>
+                        <div className="event__description-header">Описание:</div>
                         <p className="event__description">{dataEvent.description}</p>
                     </section>
-                    <section className="task__widget"></section>
+                    <section className="task__widget">
+                        <div className="task__header">
+                            Задачи:
+                        </div>
+                        <div className="task__list">
+                            
+                        </div>
+                    </section>
                 </div>
             </main>
             <MobileHeader />

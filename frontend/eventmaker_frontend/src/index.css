@@ -725,7 +725,8 @@ body {
 /* Таблица */
 .finance-transactions-table {
     width: 100%;
-    min-width: 800px; /* Минимальная ширина для мобильных */
+    min-width: 800px;
+    /* Минимальная ширина для мобильных */
     border-collapse: collapse;
 }
 
@@ -735,7 +736,8 @@ body {
 }
 
 .table__header-row {
-    display: table-row; /* Меняем на table-row для правильного отображения */
+    display: table-row;
+    /* Меняем на table-row для правильного отображения */
 }
 
 .table__item-header {
@@ -750,7 +752,8 @@ body {
 
 /* Ячейки */
 .table__list-row {
-    display: table-row; /* Меняем на table-row */
+    display: table-row;
+    /* Меняем на table-row */
     border-bottom: 1px solid rgba(44, 62, 80, 0.10);
     transition: background-color 0.2s;
 }
@@ -843,28 +846,29 @@ body {
         padding: 16px;
         border-radius: 16px;
     }
-    
+
     .widgets__finance-transactions-header {
         font-size: 20px;
         margin-bottom: 16px;
     }
-    
+
     .finance-transactions-table {
-        min-width: 850px; /* Больше чтобы был скролл */
+        min-width: 850px;
+        /* Больше чтобы был скролл */
     }
-    
+
     .table__item-header,
     .table__item {
         padding: 12px 10px;
         font-size: 14px;
     }
-    
+
     /* Индикатор скролла на мобильных */
     .table-wrapper {
         position: relative;
         margin-bottom: 10px;
     }
-    
+
     .table-wrapper::after {
         content: '← прокрутите →';
         position: absolute;
@@ -885,17 +889,17 @@ body {
     .widgets__finance-transactions {
         padding: 12px;
     }
-    
+
     .widgets__finance-transactions-header {
         font-size: 18px;
     }
-    
+
     .table__item-header,
     .table__item {
         padding: 10px 8px;
         font-size: 13px;
     }
-    
+
     .status-text {
         font-size: 12px;
     }
@@ -1134,4 +1138,10 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.task__header {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text-primary);
 }

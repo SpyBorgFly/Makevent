@@ -20,38 +20,36 @@ export function NotePopUp({ setIsOpen, eventId, onNoteCreated }) {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        if (!formData.title.trim()) return alert("Введите заголовок заметки");
+    if (!formData.title.trim()) return alert("Введите заголовок заметки");
 
-        setLoading(true);
+    setLoading(true);
 
-        try {
-            const dataToSend = {
-                event: eventId,
-                title: formData.title,
-                content: formData.content,
-                tags: formData.tags,
-            };
+    try {
+        await eventAPI.createNote(eventId, {
+            title: formData.title,
+            content: formData.content,
+            tags: formData.tags,
+        });
 
-            await eventAPI.createNote(dataToSend);
+        setIsOpen(false);
+        onNoteCreated && onNoteCreated();
 
-            setIsOpen(false);
-            onNoteCreated && onNoteCreated();
+        setFormData({
+            title: "",
+            content: "",
+            tags: "",
+        });
 
-            setFormData({
-                title: "",
-                content: "",
-                tags: "",
-            });
+    } catch (error) {
+        console.error(error);
+        alert("Ошибка при создании заметки");
+    } finally {
+        setLoading(false);
+    }
+};
 
-        } catch (error) {
-            console.error(error);
-            alert("Ошибка при создании заметки");
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <div className="popup-overlay">

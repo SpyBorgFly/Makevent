@@ -42,6 +42,8 @@ export const eventAPI = {
     createTask: (data) => apiRequest('/tasks/', { method: 'POST', data }),
     getMyTask: (id) => apiRequest(`/tasks/${id}/`, { method: 'GET' }),
     getMyTasksByEvent: (id) => apiRequest(`/events/${id}/tasks/`, { method: 'GET' }),
+    changeTask: (id) => apiRequest(`/tasks/${id}/`, { method: 'PUT' }),
+    deleteTask: (id) => apiRequest(`/tasks/${id}/`, { method: 'DELETE' }),
 
     // Заметки
     getAllNotes: () => apiRequest('/notes/', { method: 'GET' }),

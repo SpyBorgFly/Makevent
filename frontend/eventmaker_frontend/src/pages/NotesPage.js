@@ -46,39 +46,15 @@ export function NotesPage() {
                         </div>
                     </section>
                     <section className="notes-widgets">
-                        <Link to="#" className="notes-widgets__widget shadow-glass">
-                            <div className="notes-widgets__datetime">18 марта, 15:20</div>
-                            <h2 className="notes-widgets__widget-header">Идеи для welcome-зоны</h2>
-                            <div className="notes-widgets__widget-description">Добавить интерактивную фотозону с фирменным
-                                брендингом. Рассмотреть партнёрство с кофейней для welcome-drink.
-                            </div>
-                            <div className="notes-widgets__widget-tags">
-                                <span className="tag card-event-status work">Сессия партнеров</span>
-                                <span className="tag card-event-status notes">Идея</span>
-                            </div>
-                        </Link>
-                        <Link to="#" className="notes-widgets__widget shadow-glass">
-                            <div className="notes-widgets__datetime">14 марта, 10:10</div>
-                            <h2 className="notes-widgets__widget-header">Список важных гостей</h2>
-                            <div className="notes-widgets__widget-description">Проверить подтверждения от VIP-партнёров. Подготовить
-                                отдельные бейджи и welcome-пакеты.
-                            </div>
-                            <div className="notes-widgets__widget-tags">
-                                <span className="tag card-event-status error">Весенний вебинар</span>
-                                <span className="tag card-event-status work">Контроль</span>
-                            </div>
-                        </Link>
                         {dataNotes.map(el => {
                             return (
-                                <Link to="#" className="notes-widgets__widget shadow-glass">
+                                <Link to="#" className="notes-widgets__widget shadow-glass" key={el.id}>
                                     <div className="notes-widgets__datetime">14 марта, 10:10</div>
-                                    <h2 className="notes-widgets__widget-header">Список важных гостей</h2>
-                                    <div className="notes-widgets__widget-description">Проверить подтверждения от VIP-партнёров. Подготовить
-                                        отдельные бейджи и welcome-пакеты.
-                                    </div>
+                                    <h2 className="notes-widgets__widget-header">{el.title}</h2>
+                                    <div className="notes-widgets__widget-description">{el.content}</div>
                                     <div className="notes-widgets__widget-tags">
-                                        <span className="tag card-event-status error">Весенний вебинар</span>
-                                        <span className="tag card-event-status work">Контроль</span>
+                                        <span className="tag card-event-status error">{el.tags}</span>
+                                        <span className="tag card-event-status work">{el.event}</span>
                                     </div>
                                 </Link>
                             );

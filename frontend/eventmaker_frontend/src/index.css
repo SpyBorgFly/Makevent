@@ -3233,3 +3233,523 @@ body {
 .report-transactions tr:hover {
     background: #F9FAFB;
 }
+
+/* ===== ОСНОВНЫЕ СТИЛИ ДИАГРАММЫ ГАНТА ===== */
+
+.gantt-section {
+    margin-top: 40px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.gantt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.gantt-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.gantt-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.zoom-controls {
+    display: flex;
+    gap: 5px;
+    background: #F3F4F6;
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.zoom-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #6B7280;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.zoom-btn:hover {
+    background: white;
+    color: #374151;
+}
+
+.zoom-btn.active {
+    background: white;
+    color: #111827;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.date-range-info {
+    font-size: 12px;
+    color: #6B7280;
+    white-space: nowrap;
+}
+
+/* ===== КОНТЕЙНЕР ДИАГРАММЫ ===== */
+.gantt-container-wrapper {
+    position: relative;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    overflow: auto;
+    background: white;
+}
+
+.gantt-container {
+    min-width: 1000px;
+    position: relative;
+}
+
+/* ===== ШКАЛА ВРЕМЕНИ ===== */
+.gantt-timeline {
+    display: flex;
+    background: #F9FAFB;
+    border-bottom: 1px solid #E5E7EB;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.gantt-unit {
+    flex: 1;
+    min-width: 100px;
+    padding: 10px 5px;
+    text-align: center;
+    border-right: 1px solid #E5E7EB;
+    position: relative;
+    background: inherit;
+}
+
+.gantt-unit:last-child {
+    border-right: none;
+}
+
+.gantt-unit.today {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.gantt-unit.weekend {
+    background-color: rgba(245, 158, 11, 0.1);
+}
+
+.gantt-unit.event-day {
+    background-color: rgba(139, 92, 246, 0.1);
+}
+
+.unit-label {
+    font-weight: 600;
+    font-size: 13px;
+    color: #111827;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.unit-subtitle {
+    font-size: 11px;
+    color: #6B7280;
+}
+
+/* ===== ОБЛАСТЬ ЗАДАЧ ===== */
+.gantt-tasks-area {
+    position: relative;
+    min-height: 300px;
+}
+
+/* ===== ОТДЕЛЬНАЯ ЗАДАЧА ===== */
+.gantt-task {
+    position: absolute;
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: all 0.2s;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.gantt-task:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+}
+
+.gantt-task.todo {
+    background: linear-gradient(135deg, #F59E0B, #FBBF24);
+    color: white;
+}
+
+.gantt-task.in_progress {
+    background: linear-gradient(135deg, #3B82F6, #60A5FA);
+    color: white;
+}
+
+.gantt-task.done {
+    background: linear-gradient(135deg, #10B981, #34D399);
+    color: white;
+    opacity: 0.8;
+}
+
+.gantt-task.cancelled {
+    background: linear-gradient(135deg, #6B7280, #9CA3AF);
+    color: white;
+    opacity: 0.6;
+}
+
+.task-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+}
+
+.task-title {
+    font-weight: 500;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+.task-duration {
+    font-size: 11px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 6px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+/* ===== ЛИНИИ МАРКЕРОВ ===== */
+.gantt-marker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.current-date-marker {
+    border-left: 2px solid #DC2626;
+}
+
+.event-date-marker {
+    border-left: 2px solid #8B5CF6;
+}
+
+.marker-label {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.current-date-marker .marker-label {
+    background-color: #DC2626;
+    color: white;
+}
+
+.event-date-marker .marker-label {
+    background-color: #8B5CF6;
+    color: white;
+}
+
+/* ===== ЛЕГЕНДА ===== */
+.gantt-legend {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #E5E7EB;
+}
+
+.legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.legend-group h4 {
+    font-size: 13px;
+    color: #374151;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.legend-color.todo {
+    background: linear-gradient(135deg, #F59E0B, #FBBF24);
+}
+
+.legend-color.in_progress {
+    background: linear-gradient(135deg, #3B82F6, #60A5FA);
+}
+
+.legend-color.done {
+    background: linear-gradient(135deg, #10B981, #34D399);
+    opacity: 0.8;
+}
+
+.legend-color.cancelled {
+    background: linear-gradient(135deg, #6B7280, #9CA3AF);
+}
+
+.marker-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.marker-dot.today {
+    background-color: #DC2626;
+}
+
+.marker-dot.event {
+    background-color: #8B5CF6;
+}
+
+.legend-info {
+    font-size: 12px;
+    color: #6B7280;
+    margin-top: 5px;
+}
+
+/* ===== СООБЩЕНИЕ ОБ ОТСУТСТВИИ ДАННЫХ ===== */
+.gantt-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6B7280;
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.gantt-empty-state h4 {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #374151;
+}
+
+.gantt-empty-state p {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
+@media (max-width: 768px) {
+    .gantt-section {
+        padding: 15px;
+    }
+    
+    .gantt-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .gantt-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .gantt-unit {
+        min-width: 80px;
+        padding: 8px 4px;
+    }
+    
+    .unit-label {
+        font-size: 12px;
+    }
+    
+    .unit-subtitle {
+        font-size: 10px;
+    }
+    
+    .gantt-task {
+        height: 32px;
+        padding: 0 8px;
+    }
+    
+    .task-title {
+        font-size: 12px;
+    }
+    
+    .task-duration {
+        font-size: 10px;
+        padding: 1px 4px;
+    }
+    
+    .legend-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+}
+
+/* Стили для сетки диаграммы */
+.gantt-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.grid-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(229, 231, 235, 0.5);
+}
+
+/* Отладочная информация */
+.debug-info {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    font-size: 10px;
+    color: #6B7280;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px 8px;
+    border-radius: 4px;
+    border: 1px solid #E5E7EB;
+    z-index: 100;
+}
+
+/* Исправляем ширину единиц шкалы времени */
+.gantt-unit {
+    flex: none;
+    width: calc(100% / var(--units-count, 10));
+    min-width: 80px;
+    padding: 8px 4px;
+    border-right: 1px solid #E5E7EB;
+    text-align: center;
+    background: #F9FAFB;
+    position: relative;
+}
+
+/* Показываем вертикальные линии между днями/неделями/месяцами */
+.gantt-unit:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #E5E7EB;
+}
+
+/* Убираем стили для дней и оставляем только для недель/месяцев */
+
+.gantt-unit {
+    flex: none;
+    padding: 10px 5px;
+    border-right: 1px solid #E5E7EB;
+    text-align: center;
+    background: #F9FAFB;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.gantt-unit.today {
+    background-color: rgba(59, 130, 246, 0.15);
+    border-left: 2px solid #3B82F6;
+    border-right: 2px solid #3B82F6;
+}
+
+.gantt-unit.event-day {
+    background-color: rgba(139, 92, 246, 0.15);
+    border-left: 2px solid #8B5CF6;
+    border-right: 2px solid #8B5CF6;
+}
+
+.unit-label {
+    font-weight: 600;
+    font-size: 13px;
+    color: #111827;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.unit-subtitle {
+    font-size: 11px;
+    color: #6B7280;
+    font-weight: 500;
+}
+
+/* Сетка */
+.gantt-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.grid-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(209, 213, 219, 0.7);
+    z-index: 1;
+}
+
+/* Для месячного вида делаем подписи компактнее */
+.gantt-container[data-zoom="months"] .unit-label {
+    font-size: 12px;
+}
+
+.gantt-container[data-zoom="months"] .unit-subtitle {
+    font-size: 10px;
+}

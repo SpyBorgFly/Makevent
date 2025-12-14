@@ -3,6 +3,7 @@ import eventAPI from "../api";
 import { useEffect, useState } from "react";
 import { Header } from "../components/Header";
 import { MobileHeader } from "../components/MobileHeader";
+import { GanttChart } from "../components/GanttChart";
 
 export function EventPage() {
     const { eventId } = useParams();
@@ -15,6 +16,7 @@ export function EventPage() {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [showStatusMenu, setShowStatusMenu] = useState(false);
     const [newTaskDueDate, setNewTaskDueDate] = useState("");
+    const [newTaskStartDate, setNewTaskStartDate] = useState("");
 
     const fetchData = async (id) => {
         try {
@@ -99,12 +101,20 @@ export function EventPage() {
                 dueDateISO = date.toISOString();
             }
 
+            let startDateISO = null;
+            if (newTaskStartDate) {
+                const date = new Date(newTaskStartDate);
+                date.setHours(9, 0, 0, 0); // Начало дня в 9:00
+                startDateISO = date.toISOString();
+            }
+
             const newTask = {
                 event: parseInt(eventId),
                 title: newTaskTitle.trim(),
                 description: newTaskDescription.trim(),
                 status: 'todo',
                 priority: 'medium',
+                start_date: startDateISO, // Добавляем дату начала
                 due_date: dueDateISO || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
                 assignees: []
             };
@@ -117,6 +127,7 @@ export function EventPage() {
             // Сбрасываем поля формы
             setNewTaskTitle("");
             setNewTaskDescription("");
+            setNewTaskStartDate("");
             setNewTaskDueDate("");
 
         } catch (error) {
@@ -125,7 +136,6 @@ export function EventPage() {
             alert('Не удалось создать задачу');
         }
     };
-
     const deleteTask = async (taskId) => {
         if (window.confirm('Вы уверены, что хотите удалить эту задачу?')) {
             try {
@@ -401,11 +411,20 @@ export function EventPage() {
                                 <input
                                     type="date"
                                     className="date-input"
+                                    placeholder="Начало"
+                                    value={newTaskStartDate}
+                                    onChange={(e) => setNewTaskStartDate(e.target.value)}
+                                    min={new Date().toISOString().split('T')[0]}
+                                    title="Дата начала задачи"
+                                />
+                                <input
+                                    type="date"
+                                    className="date-input"
                                     placeholder="Дедлайн"
                                     value={newTaskDueDate}
                                     onChange={(e) => setNewTaskDueDate(e.target.value)}
-                                    min={new Date().toISOString().split('T')[0]} // Нельзя выбрать прошедшую дату
-                                    title="Выберите дату дедлайна"
+                                    min={newTaskStartDate || new Date().toISOString().split('T')[0]}
+                                    title="Дата окончания задачи"
                                 />
                                 <button type="submit" className="add-task-btn">
                                     Добавить
@@ -513,6 +532,21 @@ export function EventPage() {
                             )}
                         </div>
                     </section>
+                    <section className="gantt-section">
+                        <div className="task__header-section">
+                            <h2 className="task__header">
+                                Диаграмма Ганта
+                                <span className="task-count">({taskList.filter(t => t.start_date && t.due_date).length})</span>
+                            </h2>
+                        </div>
+
+                        <GanttChart
+                            tasks={taskList}
+                            eventDate={dataEvent.event_day}
+                            formatDate={formatDate}
+                            getTaskStatusText={getTaskStatusText}
+                        />
+                    </section>
                 </div>
             </main>
             <MobileHeader />
@@ -541,6 +575,26 @@ function TaskItem({ task, onToggle, onDelete, formatDate, getPriorityColor, getS
         }
     };
 
+    // Рассчитываем прогресс задачи (если есть даты)
+    const getTaskProgress = () => {
+        if (!task.start_date || !task.due_date) return null;
+
+        const start = new Date(task.start_date);
+        const due = new Date(task.due_date);
+        const now = new Date();
+
+        const totalDuration = due - start;
+        const elapsed = now - start;
+
+        if (totalDuration <= 0) return 100;
+        if (elapsed <= 0) return 0;
+        if (elapsed >= totalDuration) return 100;
+
+        return Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+    };
+
+    const progress = getTaskProgress();
+
     return (
         <div className={`task-item ${task.status === 'done' ? 'completed' : ''} ${task.status === 'cancelled' ? 'cancelled' : ''}`}>
             <div className="task-item__content" onClick={() => setIsExpanded(!isExpanded)}>
@@ -560,9 +614,19 @@ function TaskItem({ task, onToggle, onDelete, formatDate, getPriorityColor, getS
                     <div className="task-header">
                         <span className="task-title">{task.title}</span>
                         <div className="task-tags">
-                            {task.due_date && (
+                            {task.start_date && task.due_date && (
+                                <span className="date-range-tag" title={`${formatDate(task.start_date)} - ${formatDate(task.due_date)}`}>
+                                    📅 {formatDate(task.start_date)} → {formatDate(task.due_date)}
+                                </span>
+                            )}
+                            {task.start_date && !task.due_date && (
+                                <span className="start-date-tag">
+                                    ▶️ {formatDate(task.start_date)}
+                                </span>
+                            )}
+                            {!task.start_date && task.due_date && (
                                 <span className="due-date-tag">
-                                    📅 {formatDate(task.due_date)}
+                                    ⏰ {formatDate(task.due_date)}
                                 </span>
                             )}
                         </div>
@@ -570,6 +634,19 @@ function TaskItem({ task, onToggle, onDelete, formatDate, getPriorityColor, getS
 
                     {task.description && (
                         <p className="task-description">{task.description}</p>
+                    )}
+
+                    {/* Прогресс бар для задачи (если есть обе даты) */}
+                    {progress !== null && (
+                        <div className="task-progress-bar">
+                            <div
+                                className="task-progress-fill"
+                                style={{ width: `${progress}%` }}
+                            ></div>
+                            <div className="task-progress-text">
+                                {Math.round(progress)}%
+                            </div>
+                        </div>
                     )}
 
                     <div className="task-footer">

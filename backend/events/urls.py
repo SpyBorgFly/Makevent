@@ -6,7 +6,7 @@ from .views import (
     TaskViewSet,
     FinanceItemViewSet,
     NoteViewSet,
-    finance_summary,     
+    finance_report,     
 )
 
 router = DefaultRouter()
@@ -19,5 +19,5 @@ urlpatterns = [
     path('', include(router.urls)),
 
     # 🔥 Новый финансовый аггрегирующий эндпоинт
-    path('finance/summary/', finance_summary, name='finance-summary'),
+    path("finance/report/", finance_report),
 ]

@@ -10,6 +10,9 @@ from datetime import datetime, timedelta
 from django.db.models import Sum
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
+from datetime import date
+from calendar import monthrange
+
 
 logger = logging.getLogger(__name__)
 
@@ -171,65 +174,53 @@ class NoteViewSet(viewsets.ModelViewSet):
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def finance_summary(request):
-    user = request.user
+def finance_report(request):
+    qs = FinanceItem.objects.all()
 
-    # Все транзакции пользователя
-    qs = FinanceItem.objects.filter(event__created_by=user)
+    # фильтр по событию
+    event_id = request.GET.get("event_id")
+    if event_id:
+        qs = qs.filter(event_id=event_id)
 
-    # Суммы
-    total_income = qs.filter(type="income").aggregate(total=Sum("amount"))["total"] or 0
-    total_expenses = qs.filter(type="expense").aggregate(total=Sum("amount"))["total"] or 0
-    net_total = total_income - total_expenses
+    period = request.GET.get("period")
 
-    # Даты для анализа по месяцам
-    today = datetime.today()
-    month_ago = today - timedelta(days=30)
-    prev_month_start = today - timedelta(days=60)
-    prev_month_end = today - timedelta(days=30)
+    # ---- период: месяц ----
+    if period == "month":
+        year = int(request.GET.get("year"))
+        month = int(request.GET.get("month"))
 
-    # Текущий месяц
-    month_income = qs.filter(type="income", date__gte=month_ago).aggregate(total=Sum("amount"))["total"] or 0
-    month_expenses = qs.filter(type="expense", date__gte=month_ago).aggregate(total=Sum("amount"))["total"] or 0
+        start = date(year, month, 1)
+        end = date(year, month, monthrange(year, month)[1])
 
-    # Прошлый месяц (для процента изменения)
-    prev_month_income = qs.filter(type="income", date__gte=prev_month_start, date__lt=prev_month_end).aggregate(total=Sum("amount"))["total"] or 0
-    prev_month_expenses = qs.filter(type="expense", date__gte=prev_month_start, date__lt=prev_month_end).aggregate(total=Sum("amount"))["total"] or 0
+    # ---- период: год ----
+    elif period == "year":
+        year = int(request.GET.get("year"))
 
-    # Изменение в процентах
-    def percent_change(current, previous):
-        if previous == 0:
-            return 0
-        return round((current - previous) / previous, 3)
+        start = date(year, 1, 1)
+        end = date(year, 12, 31)
 
-    month_income_change = percent_change(month_income, prev_month_income)
-    month_expenses_change = percent_change(month_expenses, prev_month_expenses)
+    # ---- произвольный период ----
+    elif period == "custom":
+        start = request.GET.get("date_from")
+        end = request.GET.get("date_to")
 
-    # Бюджеты по событиям
-    events_data = []
-    for event in Event.objects.filter(created_by=user):
-        income = event.finance_items.filter(type="income").aggregate(total=Sum("amount"))["total"] or 0
-        expenses = event.finance_items.filter(type="expense").aggregate(total=Sum("amount"))["total"] or 0
-        budget = income - expenses
-        events_data.append({
-            "event_id": event.id,
-            "title": event.title,
-            "budget": budget if (income or expenses) else None
-        })
+    else:
+        return Response({"error": "Invalid period"}, status=400)
+
+    qs = qs.filter(date__gte=start, date__lte=end)
+
+    income = qs.filter(type="income").aggregate(total=Sum("amount"))["total"] or 0
+    expenses = qs.filter(type="expense").aggregate(total=Sum("amount"))["total"] or 0
 
     return Response({
-        "total_income": total_income,
-        "total_expenses": total_expenses,
-        "net_total": net_total,
+        "period": period,
+        "date_from": start,
+        "date_to": end,
+        "event": event_id,
 
-        "month_income": month_income,
-        "month_income_change": month_income_change,
-
-        "month_expenses": month_expenses,
-        "month_expenses_change": month_expenses_change,
-
-        "events": events_data,
+        "total_income": income,
+        "total_expenses": expenses,
+        "balance": income - expenses
     })
 
 

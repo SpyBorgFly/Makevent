@@ -43,7 +43,7 @@ export function EventsPage() {
                 showProgress: false
             };
         }
-        
+
         if (event.status === 'completed' || event.status === 'done') {
             return {
                 percentage: 100,
@@ -52,9 +52,9 @@ export function EventsPage() {
                 showProgress: true
             };
         }
-        
+
         const totalTasks = tasks.length;
-        
+
         if (totalTasks === 0) {
             return {
                 percentage: 0,
@@ -63,11 +63,11 @@ export function EventsPage() {
                 showProgress: true
             };
         }
-        
+
         const completedTasks = tasks.filter(task => task.status === 'done').length;
-        
+
         const percentage = Math.round((completedTasks / totalTasks) * 100);
-        
+
         return {
             percentage,
             completedTasks,
@@ -91,7 +91,7 @@ export function EventsPage() {
         switch (status) {
             case 'planned': return 'error';
             case 'in_progress': return 'work';
-            case 'completed': 
+            case 'completed':
             case 'done': return 'notes';
             case 'cancelled': return 'cancelled';
             default: return 'work';
@@ -102,12 +102,12 @@ export function EventsPage() {
         setLoading(true);
         try {
             const events = await eventAPI.getAllEvents();
-            
+
             const eventsWithTasks = await Promise.all(
                 events.map(async (event) => {
                     const tasks = await fetchTasksForEvent(event.id);
                     const progress = calculateProgress(event, tasks);
-                    
+
                     return {
                         ...event,
                         progress,
@@ -118,11 +118,11 @@ export function EventsPage() {
                     };
                 })
             );
-            
+
             setDataEvents(eventsWithTasks);
             setFilteredEvents(eventsWithTasks);
             setEventsWithProgress(eventsWithTasks);
-            
+
         } catch (error) {
             console.error('Ошибка загрузки:', error);
         } finally {
@@ -166,18 +166,18 @@ export function EventsPage() {
                 if (!event.originalEventType) return false;
                 const eventTypeLower = event.originalEventType.toLowerCase();
                 const filterLower = typeFilter.toLowerCase();
-                
+
                 const typeMap = {
                     'конференция': ['конференция', 'conference'],
                     'тимбилдинг': ['тимбилдинг', 'teambuilding', 'team-building'],
                     'вебинар': ['вебинар', 'webinar']
                 };
-                
+
                 // Если фильтр есть в мапе, проверяем все варианты
                 if (typeMap[filterLower]) {
                     return typeMap[filterLower].includes(eventTypeLower);
                 }
-                
+
                 return eventTypeLower === filterLower;
             });
         }
@@ -194,7 +194,7 @@ export function EventsPage() {
     }
 
     const ProgressBar = ({ percentage, showProgress, completedTasks, totalTasks }) => {
-        
+
         if (!showProgress) {
             return (
                 <div className="widgets__event-card-bar">
@@ -207,12 +207,12 @@ export function EventsPage() {
         }
 
         const width = Math.min(Math.max(percentage, 0), 100);
-        
+
         return (
             <div className="widgets__event-card-bar">
                 <div className="progress-bar-wrapper">
                     <div className="progress-bar-container">
-                        <div 
+                        <div
                             className="progress-bar-fill"
                             style={{ width: `${width}%` }}
                         ></div>
@@ -232,13 +232,13 @@ export function EventsPage() {
 
     const getUniqueEventTypes = () => {
         const types = new Set();
-        
+
         eventsWithProgress.forEach(event => {
             if (event.originalEventType) {
                 types.add(event.originalEventType.toLowerCase());
             }
         });
-        
+
         return Array.from(types).map(type => {
             let label = type;
             if (type === 'conference') label = 'Конференция';
@@ -247,7 +247,7 @@ export function EventsPage() {
             else if (type === 'конференция') label = 'Конференция';
             else if (type === 'вебинар') label = 'Вебинар';
             else if (type === 'тимбилдинг') label = 'Тимбилдинг';
-            
+
             return {
                 value: type,
                 label: label
@@ -259,7 +259,7 @@ export function EventsPage() {
 
     const displayEventType = (type) => {
         if (!type) return 'Не указано';
-        
+
         const typeMap = {
             'conference': 'Конференция',
             'webinar': 'Вебинар',
@@ -269,7 +269,7 @@ export function EventsPage() {
             'вебинар': 'Вебинар',
             'тимбилдинг': 'Тимбилдинг'
         };
-        
+
         return typeMap[type.toLowerCase()] || type;
     };
 
@@ -289,7 +289,7 @@ export function EventsPage() {
                             {isOpen && <PopUpWindow setIsOpen={setIsOpen} onEventCreated={handleEventCreated} />}
                         </div>
                     </div>
-                    
+
                     <section className="widgets">
                         <div className="widgets__card events-page-widgets shadow-glass">
                             <div className="widgets__filter-section">
@@ -332,7 +332,7 @@ export function EventsPage() {
                             <div className="search-results-info">
                                 <span>Найдено событий: {filteredEvents.length}</span>
                                 {(searchTerm || statusFilter || typeFilter) && (
-                                    <button 
+                                    <button
                                         onClick={() => {
                                             setSearchTerm("");
                                             setStatusFilter("");
@@ -372,14 +372,14 @@ export function EventsPage() {
                                                     </span>
                                                 </div>
                                                 <h2 className="widgets__event-card-header">{el.title}</h2>
-                                                
-                                                <ProgressBar 
+
+                                                <ProgressBar
                                                     percentage={el.progress.percentage}
                                                     showProgress={el.progress.showProgress}
                                                     completedTasks={el.progress.completedTasks}
                                                     totalTasks={el.progress.totalTasks}
                                                 />
-                                                
+
                                                 <div className="widgets__event-card-type">
                                                     Тип: <strong>{displayEventType(el.originalEventType)}</strong>
                                                 </div>
@@ -388,8 +388,8 @@ export function EventsPage() {
                                     })
                                 ) : (
                                     <div className="no-events-message">
-                                        {eventsWithProgress.length === 0 
-                                            ? "Событий пока нет" 
+                                        {eventsWithProgress.length === 0
+                                            ? "Событий пока нет"
                                             : "События по вашему запросу не найдены"
                                         }
                                     </div>

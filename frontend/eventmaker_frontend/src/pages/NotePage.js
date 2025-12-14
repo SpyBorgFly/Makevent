@@ -3,40 +3,55 @@ import { useEffect, useState } from "react";
 import eventAPI from "../api";
 import { Header } from "../components/Header";
 import { MobileHeader } from "../components/MobileHeader";
+import { Link } from "react-router";
 
 export function NotePage() {
     const { noteId } = useParams();
     const navigate = useNavigate();
     const [noteData, setNoteData] = useState(null);
+    const [eventData, setEventData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Загрузка заметки и события
     useEffect(() => {
-        const fetchNote = async () => {
+        const fetchData = async () => {
             if (!noteId) return;
-            
+
             try {
                 setLoading(true);
-                const data = await eventAPI.getMyNote(noteId);
-                setNoteData(data);
+
+                const note = await eventAPI.getMyNote(noteId);
+                setNoteData(note);
+
+                if (note.event) {
+                    try {
+                        const event = await eventAPI.getEvent(note.event);
+                        setEventData(event);
+                    } catch (eventError) {
+                        console.warn('Не удалось загрузить событие:', eventError);
+                    }
+                }
+
                 setError(null);
             } catch (err) {
                 console.error('Ошибка загрузки заметки:', err);
                 setError('Не удалось загрузить заметку');
                 setNoteData(null);
+                setEventData(null);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchNote();
+        fetchData();
     }, [noteId]);
 
     const handleDeleteNote = async () => {
         if (window.confirm('Вы уверены, что хотите удалить эту заметку?')) {
             try {
                 await eventAPI.deleteMyNote(noteId);
-                navigate('/notes'); 
+                navigate('/notes');
             } catch (err) {
                 console.error('Ошибка удаления заметки:', err);
                 alert('Не удалось удалить заметку');
@@ -54,6 +69,13 @@ export function NotePage() {
             hour: '2-digit',
             minute: '2-digit'
         });
+    };
+
+    const splitTags = (tagsString) => {
+        if (!tagsString) return [];
+        return tagsString.split(',')
+            .map(tag => tag.trim())
+            .filter(tag => tag.length > 0);
     };
 
     if (loading) {
@@ -80,11 +102,11 @@ export function NotePage() {
                             <div className="error-icon">📝</div>
                             <h2 className="error-title">Заметка не найдена</h2>
                             <p className="error-text">{error || 'Заметка не существует или была удалена'}</p>
-                            <button 
-                                className="back-btn" 
-                                onClick={() => navigate(-1)}
+                            <button
+                                className="back-btn"
+                                onClick={() => navigate('/notes')}
                             >
-                                ← Назад
+                                ← К списку заметок
                             </button>
                         </div>
                     </div>
@@ -94,6 +116,9 @@ export function NotePage() {
         );
     }
 
+    const tags = splitTags(noteData.tags);
+    const eventTitle = eventData?.title || `Событие #${noteData.event}`;
+
     return (
         <>
             <Header />
@@ -101,10 +126,10 @@ export function NotePage() {
                 <div className="main__container">
                     <div className="note-header">
                         <div className="note-header-info">
-                            <button 
+                            <button
                                 className="back-button"
-                                onClick={() => navigate(-1)}
-                                title="Назад"
+                                onClick={() => navigate('/notes')}
+                                title="К списку заметок"
                             >
                                 ←
                             </button>
@@ -119,16 +144,19 @@ export function NotePage() {
                                             Изменено: {formatDateTime(noteData.updated_at)}
                                         </span>
                                     )}
-                                    {noteData.event && (
-                                        <span className="note-event">
-                                            Событие: {noteData.event}
-                                        </span>
-                                    )}
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div className="note-actions">
+                            {noteData.event && (
+                                <Link
+                                    to={`/events/${noteData.event}`}
+                                    className="event-link-btn"
+                                >
+                                    К событию
+                                </Link>
+                            )}
                             <button
                                 className="delete-note-btn"
                                 onClick={handleDeleteNote}
@@ -139,23 +167,33 @@ export function NotePage() {
                         </div>
                     </div>
 
-                    {/* Теги заметки */}
-                    {noteData.tags && (
-                        <div className="note-tags">
-                            {noteData.tags.split(',').map((tag, index) => (
-                                <span key={index} className="note-tag">
-                                    #{tag.trim()}
-                                </span>
-                            ))}
+                    {tags.length > 0 && (
+                        <div className="note-tags-section">
+                            <h3 className="tags-title">
+                                <span className="tags-icon"></span> Теги:
+                            </h3>
+                            <div className="note-tags">
+                                {tags.map((tag, index) => (
+                                    <span key={index} className="note-tag">
+                                        #{tag}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
                     )}
 
                     {/* Содержимое заметки */}
-                    <section className="note-content shadow-glass">
+                    <section className="note-content">
                         <h2 className="content-title">Содержимое:</h2>
                         <div className="note-content-text">
                             {noteData.content ? (
-                                <p>{noteData.content}</p>
+                                <div className="content-paragraphs">
+                                    {noteData.content.split('\n').map((paragraph, index) => (
+                                        <p key={index} className="content-paragraph">
+                                            {paragraph}
+                                        </p>
+                                    ))}
+                                </div>
                             ) : (
                                 <p className="empty-content">У этой заметки нет содержимого</p>
                             )}

@@ -41,7 +41,7 @@ export function PopUpWindow({ setIsOpen, onEventCreated }) {
         }
 
         setLoading(true);
-        
+
         try {
             const dataToSend = {
                 title: formData.title,
@@ -50,11 +50,11 @@ export function PopUpWindow({ setIsOpen, onEventCreated }) {
                 event_time: formData.event_time + ":00",
                 event_type: formData.event_type
             };
-            
+
             console.log("Отправляемые данные:", dataToSend);
-            
+
             const response = await eventAPI.createEvent(dataToSend);
-            
+
             console.log("Успешно создано:", response);
             setIsOpen(false);
 
@@ -69,7 +69,7 @@ export function PopUpWindow({ setIsOpen, onEventCreated }) {
                 event_time: '',
                 event_type: '',
             });
-            
+
         } catch (error) {
             console.error('Ошибка:', error);
             alert('Произошла ошибка при создании события: ' + error.message);
@@ -114,7 +114,7 @@ export function PopUpWindow({ setIsOpen, onEventCreated }) {
                             value={formData.event_day}
                             onChange={handleInputChange}
                             required />
-                    </div>                    
+                    </div>
                     <div className="popup-form__time-section">
                         <div className="popup-form__time-section-header popup-headers">Время</div>
                         <input

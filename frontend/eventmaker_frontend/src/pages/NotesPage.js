@@ -8,10 +8,9 @@ import { useState, useEffect } from "react";
 export function NotesPage() {
     const [isOpen, setIsOpen] = useState(false);
     const [dataNotes, setDataNotes] = useState([]);
-    const [events, setEvents] = useState({}); // Храним события: {eventId: eventTitle}
+    const [events, setEvents] = useState({});
     const [loading, setLoading] = useState(true);
 
-    // Загрузка заметок
     const fetchNotes = async () => {
         try {
             const response = await eventAPI.getAllNotes();
@@ -22,7 +21,6 @@ export function NotesPage() {
         }
     }
 
-    // Загрузка событий для получения названий
     const fetchEvents = async () => {
         try {
             const response = await eventAPI.getAllEvents();
@@ -41,12 +39,11 @@ export function NotesPage() {
         const loadData = async () => {
             setLoading(true);
             try {
-                // Загружаем параллельно заметки и события
                 const [notesData, eventsData] = await Promise.all([
                     fetchNotes(),
                     fetchEvents()
                 ]);
-                
+
                 setDataNotes(notesData);
                 setEvents(eventsData);
             } catch (error) {
@@ -58,7 +55,6 @@ export function NotesPage() {
         loadData();
     }, []);
 
-    // Функция для обновления списка заметок (после создания новой)
     const refreshNotes = async () => {
         try {
             const notesData = await fetchNotes();
@@ -72,21 +68,17 @@ export function NotesPage() {
         setIsOpen(true);
     }
 
-    // Функция для обработки успешного создания заметки
     const handleNoteCreated = () => {
-        refreshNotes(); // Обновляем список заметок
+        refreshNotes();
     }
 
-    // Функция для разделения тегов
     const splitTags = (tagsString) => {
         if (!tagsString) return [];
-        // Разделяем по запятой, удаляем пробелы, фильтруем пустые
         return tagsString.split(',')
             .map(tag => tag.trim())
             .filter(tag => tag.length > 0);
     }
 
-    // Получаем название события по ID
     const getEventTitle = (eventId) => {
         return events[eventId] || `Событие #${eventId}`;
     }
@@ -118,41 +110,41 @@ export function NotesPage() {
                             </span>
                         </div>
                         <div className="main__top-section-button">
-                            <button 
-                                className="main__top-section-btn create-event-btn" 
+                            <button
+                                className="main__top-section-btn create-event-btn"
                                 onClick={handleCreateNote}
                             >
                                 + Новая заметка
                             </button>
                         </div>
                     </section>
-                    
+
                     <section className="notes-widgets">
                         {dataNotes.length > 0 ? (
                             dataNotes.map(note => {
                                 const noteTags = splitTags(note.tags);
                                 const eventTitle = getEventTitle(note.event);
-                                
+
                                 return (
-                                    <Link 
-                                        to={`/notes/${note.id}`} 
-                                        className="notes-widgets__widget shadow-glass" 
+                                    <Link
+                                        to={`/notes/${note.id}`}
+                                        className="notes-widgets__widget shadow-glass"
                                         key={note.id}
                                     >
                                         <h2 className="notes-widgets__widget-header">
                                             {note.title || 'Без названия'}
                                         </h2>
-                                        
+
                                         <div className="notes-widgets__widget-description">
                                             {note.content ? (
-                                                note.content.length > 150 
-                                                    ? `${note.content.substring(0, 150)}...` 
+                                                note.content.length > 150
+                                                    ? `${note.content.substring(0, 150)}...`
                                                     : note.content
                                             ) : (
                                                 <span className="no-content">Нет содержимого</span>
                                             )}
                                         </div>
-                                        
+
                                         <div className="notes-widgets__widget-tags">
                                             {/* Теги заметки */}
                                             {noteTags.length > 0 && (
@@ -164,14 +156,14 @@ export function NotesPage() {
                                                     ))}
                                                 </div>
                                             )}
-                                            
+
                                             {/* Событие заметки */}
                                             <div className="event-tag">
                                                 <span className="tag card-event-status work" title={eventTitle}>
                                                     {eventTitle}
                                                 </span>
                                             </div>
-                                            
+
                                             {/* Дата создания */}
                                             <div className="note-date">
                                                 {new Date(note.created_at).toLocaleDateString('ru-RU')}
@@ -185,7 +177,7 @@ export function NotesPage() {
                                 <div className="empty-icon">📝</div>
                                 <h3>Заметок пока нет</h3>
                                 <p>Создайте первую заметку</p>
-                                <button 
+                                <button
                                     className="create-first-note-btn"
                                     onClick={handleCreateNote}
                                 >
@@ -197,11 +189,11 @@ export function NotesPage() {
                 </div>
             </main>
             <MobileHeader />
-            
+
             {/* Передаём функцию обновления в попап */}
             {isOpen && (
-                <NotePopUp 
-                    setIsOpen={setIsOpen} 
+                <NotePopUp
+                    setIsOpen={setIsOpen}
                     onNoteCreated={handleNoteCreated}
                 />
             )}

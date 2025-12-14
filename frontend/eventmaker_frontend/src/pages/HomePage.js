@@ -105,19 +105,19 @@ export function HomePage() {
     };
 
     const getNearestEvents = () => {
-    if (!dataEvents || dataEvents.length === 0) return [];
-    
-    const futureEvents = dataEvents.filter(event => {
-        const eventDate = new Date(event.event_day);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return eventDate >= today && event.status !== 'done';
-    });
-    
-    return futureEvents
-        .sort((a, b) => new Date(a.event_day) - new Date(b.event_day))
-        .slice(0, 3);
-};
+        if (!dataEvents || dataEvents.length === 0) return [];
+
+        const futureEvents = dataEvents.filter(event => {
+            const eventDate = new Date(event.event_day);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return eventDate >= today && event.status !== 'done';
+        });
+
+        return futureEvents
+            .sort((a, b) => new Date(a.event_day) - new Date(b.event_day))
+            .slice(0, 3);
+    };
 
     const getNearestDeadlines = () => {
         if (!allTasks || allTasks.length === 0) return [];
@@ -256,17 +256,17 @@ export function HomePage() {
                                     nearestDeadlines.map((task) => {
                                         const daysUntil = getDaysUntilDeadline(task.due_date);
                                         let deadlineText = '';
-                                        let urgencyLevel = ''; 
+                                        let urgencyLevel = '';
 
                                         if (daysUntil === 0) {
                                             deadlineText = 'Сегодня';
-                                            urgencyLevel = 'error'; 
+                                            urgencyLevel = 'error';
                                         } else if (daysUntil === 1) {
                                             deadlineText = 'Завтра';
-                                            urgencyLevel = 'error'; 
+                                            urgencyLevel = 'error';
                                         } else if (daysUntil <= 3) {
                                             deadlineText = `Через ${daysUntil} дня`;
-                                            urgencyLevel = 'error'; 
+                                            urgencyLevel = 'error';
                                         } else if (daysUntil <= 7) {
                                             deadlineText = `Через ${daysUntil} дней`;
                                             urgencyLevel = 'notes';

@@ -7,10 +7,10 @@ import { useState, useEffect } from "react";
 export function FinancePage() {
     const [isOpen, setIsOpen] = useState(false);
     const [dataFinances, setDataFinances] = useState([]);
-    const [events, setEvents] = useState({}); 
+    const [events, setEvents] = useState({});
     const [totalIncome, setTotalIncome] = useState(0);
     const [totalExpense, setTotalExpense] = useState(0);
-    const [eventBudgets, setEventBudgets] = useState([]); 
+    const [eventBudgets, setEventBudgets] = useState([]);
 
     const fetchFinances = async () => {
         try {
@@ -38,12 +38,12 @@ export function FinancePage() {
 
     const calculateEventBudgets = (finances, events) => {
         const eventTotals = {};
-        
+
         finances.forEach(transaction => {
             const eventId = transaction.event;
             const eventName = events[eventId] || `Событие ${eventId}`;
             const amount = parseFloat(transaction.amount) || 0;
-            
+
             if (!eventTotals[eventId]) {
                 eventTotals[eventId] = {
                     id: eventId,
@@ -53,7 +53,7 @@ export function FinancePage() {
                     total: 0
                 };
             }
-            
+
             if (transaction.type === 'income') {
                 eventTotals[eventId].income += amount;
                 eventTotals[eventId].total += amount;
@@ -62,7 +62,7 @@ export function FinancePage() {
                 eventTotals[eventId].total -= amount;
             }
         });
-        
+
         return Object.values(eventTotals)
             .sort((a, b) => b.total - a.total);
     };
@@ -70,7 +70,7 @@ export function FinancePage() {
     const calculateTotals = (finances) => {
         let income = 0;
         let expense = 0;
-        
+
         finances.forEach(transaction => {
             const amount = parseFloat(transaction.amount) || 0;
             if (transaction.type === 'income') {
@@ -79,7 +79,7 @@ export function FinancePage() {
                 expense += amount;
             }
         });
-        
+
         return { income, expense, total: income - expense };
     };
 
@@ -89,17 +89,17 @@ export function FinancePage() {
             try {
                 const finances = await fetchFinances();
                 const eventMap = await fetchEvents();
-                
+
                 setDataFinances(finances);
                 setEvents(eventMap);
-                
+
                 const totals = calculateTotals(finances);
                 setTotalIncome(totals.income);
                 setTotalExpense(totals.expense);
-                
+
                 const budgets = calculateEventBudgets(finances, eventMap);
                 setEventBudgets(budgets);
-                
+
             } catch (error) {
                 console.error('Ошибка загрузки данных:', error);
             }
@@ -111,17 +111,17 @@ export function FinancePage() {
         try {
             const finances = await fetchFinances();
             const eventMap = await fetchEvents();
-            
+
             setDataFinances(finances);
             setEvents(eventMap);
-            
+
             const totals = calculateTotals(finances);
             setTotalIncome(totals.income);
             setTotalExpense(totals.expense);
-            
+
             const budgets = calculateEventBudgets(finances, eventMap);
             setEventBudgets(budgets);
-            
+
         } catch (error) {
             console.log(error);
         }
@@ -165,7 +165,7 @@ export function FinancePage() {
                             </button>
                         </div>
                     </section>
-                    
+
                     <section className="widgets__finance widgets">
                         <div className="widgets__finance-budgets">
                             <div className="widgets__finance-total-budget budgets shadow-glass">
@@ -181,8 +181,8 @@ export function FinancePage() {
                                 <div className="budget__header">Расходы</div>
                                 <div className="budget__sum red">{formatAmount(totalExpense)} ₽</div>
                                 <div className="budget__info">
-                                    {dataFinances.length > 0 
-                                        ? `${dataFinances.filter(t => t.type === 'expense').length} транзакций` 
+                                    {dataFinances.length > 0
+                                        ? `${dataFinances.filter(t => t.type === 'expense').length} транзакций`
                                         : 'Нет транзакций'}
                                 </div>
                             </div>
@@ -190,13 +190,13 @@ export function FinancePage() {
                                 <div className="budget__header">Доходы</div>
                                 <div className="budget__sum green">{formatAmount(totalIncome)} ₽</div>
                                 <div className="budget__info">
-                                    {dataFinances.length > 0 
-                                        ? `${dataFinances.filter(t => t.type === 'income').length} транзакций` 
+                                    {dataFinances.length > 0
+                                        ? `${dataFinances.filter(t => t.type === 'income').length} транзакций`
                                         : 'Нет транзакций'}
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div className="widgets__finance-summary shadow-glass">
                             <h2 className="widgets__finance-summary-header">Бюджеты по мероприятиям</h2>
                             <div className="widgets__finance-summary-list">
@@ -204,7 +204,7 @@ export function FinancePage() {
                                     eventBudgets.map((event, index) => {
                                         const dotColors = ['blue-dot', 'green-dot', 'orange-dot'];
                                         const dotClass = dotColors[index % dotColors.length];
-                                        
+
                                         return (
                                             <div className="summary-list__item" key={event.id}>
                                                 <div className={`summary-list__item-color ${dotClass}`}></div>
@@ -279,7 +279,7 @@ export function FinancePage() {
                                 ) : (
                                     <div className="no-transactions-message">
                                         <p>Транзакций пока нет</p>
-                                        <button 
+                                        <button
                                             className="add-first-transaction"
                                             onClick={handleClicker}
                                         >

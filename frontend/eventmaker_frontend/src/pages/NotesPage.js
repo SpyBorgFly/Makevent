@@ -48,8 +48,7 @@ export function NotesPage() {
                     <section className="notes-widgets">
                         {dataNotes.map(el => {
                             return (
-                                <Link to="#" className="notes-widgets__widget shadow-glass" key={el.id}>
-                                    <div className="notes-widgets__datetime">14 марта, 10:10</div>
+                                <Link to={`/notes/${el.id}`} className="notes-widgets__widget shadow-glass" key={el.id}>
                                     <h2 className="notes-widgets__widget-header">{el.title}</h2>
                                     <div className="notes-widgets__widget-description">{el.content}</div>
                                     <div className="notes-widgets__widget-tags">

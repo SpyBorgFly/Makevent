@@ -267,13 +267,13 @@ export function HomePage() {
                                             urgencyLevel = 'error'; 
                                         } else if (daysUntil <= 3) {
                                             deadlineText = `Через ${daysUntil} дня`;
-                                            urgencyLevel = 'work'; 
+                                            urgencyLevel = 'error'; 
                                         } else if (daysUntil <= 7) {
                                             deadlineText = `Через ${daysUntil} дней`;
                                             urgencyLevel = 'notes';
                                         } else {
                                             deadlineText = formatDate(task.due_date);
-                                            urgencyLevel = 'notes';
+                                            urgencyLevel = 'work';
                                         }
 
                                         return (

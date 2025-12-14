@@ -8,25 +8,47 @@ const api = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
-    timeout: 10000, // 10 секунд таймаут
+    timeout: 10000,
 });
 
 const apiRequest = async (url, options = {}) => {
-    try {
-        const response = await api.request({
-            url,
-            ...options,
-        });
-        return response.data;
-    } catch (error) {
-        if (error.response) {
-            throw new Error(`HTTP error! status: ${error.response.status} - ${error.response.data?.detail || error.message}`);
-        } else if (error.request) {
-            throw new Error('Сервер не отвечает. Проверьте, что Django сервер запущен на порту 8000');
-        } else {
-            throw new Error(`Ошибка запроса: ${error.message}`);
-        }
+  try {
+    console.log(`API Request: ${options.method} ${url}`);
+    if (options.data) {
+      console.log('Request Data:', options.data);
     }
+    
+    const response = await api.request({
+      url,
+      ...options,
+    });
+    
+    console.log(`API Response (${response.status}):`, response.data);
+    return response.data;
+    
+  } catch (error) {
+    console.error('=== API ERROR DETAILS ===');
+    console.error('URL:', url);
+    console.error('Method:', options.method);
+    console.error('Request Data:', options.data);
+    
+    if (error.response) {
+      console.error('Response Status:', error.response.status);
+      console.error('Response Data:', error.response.data);
+      console.error('Response Headers:', error.response.headers);
+      
+      const errorMessage = error.response.data?.detail || 
+                          JSON.stringify(error.response.data) || 
+                          error.message;
+      throw new Error(`HTTP error! status: ${error.response.status} - ${errorMessage}`);
+    } else if (error.request) {
+      console.error('No response received:', error.request);
+      throw new Error('Сервер не отвечает. Проверьте, что Django сервер запущен на порту 8000');
+    } else {
+      console.error('Request setup error:', error.message);
+      throw new Error(`Ошибка запроса: ${error.message}`);
+    }
+  }
 };
 
 export const eventAPI = {
@@ -42,7 +64,7 @@ export const eventAPI = {
     createTask: (data) => apiRequest('/tasks/', { method: 'POST', data }),
     getMyTask: (id) => apiRequest(`/tasks/${id}/`, { method: 'GET' }),
     getMyTasksByEvent: (id) => apiRequest(`/events/${id}/tasks/`, { method: 'GET' }),
-    changeTask: (id) => apiRequest(`/tasks/${id}/`, { method: 'PUT' }),
+    changeTask: (id, data) => apiRequest(`/tasks/${id}/`, { method: 'PUT', data }),
     deleteTask: (id) => apiRequest(`/tasks/${id}/`, { method: 'DELETE' }),
 
     // Заметки
@@ -50,7 +72,7 @@ export const eventAPI = {
     createNote: (eventId, data) =>
         apiRequest('/notes/', {
             method: 'POST',
-            data: { ...data, event: eventId }, // ← ключевая правка
+            data: { ...data, event: eventId },
         }),
     getMyNote: (id) => apiRequest(`/notes/${id}/`, { method: 'GET' }),
     deleteMyNote: (id) => apiRequest(`/notes/${id}/`, { method: 'DELETE' }),
@@ -60,7 +82,7 @@ export const eventAPI = {
     createFinanceForEvent: (eventId, data) =>
         apiRequest(`/events/${eventId}/finance/`, {
             method: 'POST',
-            data: { ...data, event: eventId }, // ← ключевая правка
+            data: { ...data, event: eventId },
         }),
 };
 

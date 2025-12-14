@@ -10,7 +10,7 @@ export function NotePopUp({ setIsOpen, eventId, onNoteCreated }) {
         title: "",
         content: "",
         tags: "",
-        event: eventId || "", // если eventId передан — используем его
+        event: eventId || "",
     });
 
     const [loading, setLoading] = useState(false);
@@ -79,7 +79,7 @@ export function NotePopUp({ setIsOpen, eventId, onNoteCreated }) {
     return (
         <div className="popup-overlay">
             <div className="popup-form">
-                <div className="popup-form__header">
+                <div className="popup-form__header-section">
                     <h1 className="popup-form__header-h">Создать заметку</h1>
                     <div className="popup-form__close-button">
                         <button onClick={() => setIsOpen(false)} className="close-button">
@@ -90,7 +90,6 @@ export function NotePopUp({ setIsOpen, eventId, onNoteCreated }) {
 
                 <form className="popup-form__form" onSubmit={handleSubmit}>
 
-                    {/* Если eventId не передан — показываем выбор события */}
                     {!eventId && (
                         <div className="popup-form__type-section">
                             <div className="popup-headers">Событие</div>

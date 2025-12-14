@@ -1,4 +1,3 @@
-// components/FinancePopUp.js
 import { useState, useEffect } from "react";
 import eventAPI from "../api";
 
@@ -14,14 +13,13 @@ export function FinancePopUp({ setIsOpen, onFinanceCreated, eventId }) {
         category: "",
         date: "",
         description: "",
-        event: eventId || "", // если eventId передан — используем его
+        event: eventId || "",
     });
 
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (!eventId) {
-            // Загружаем все события для селектора
             const loadEvents = async () => {
                 try {
                     const data = await eventAPI.getAllEvents();
@@ -94,7 +92,7 @@ export function FinancePopUp({ setIsOpen, onFinanceCreated, eventId }) {
     return (
         <div className="popup-overlay">
             <div className="popup-form">
-                <div className="popup-form__header">
+                <div className="popup-form__header-section">
                     <h1 className="popup-form__header-h">Добавить транзакцию</h1>
                     <div className="popup-form__close-button">
                         <button onClick={() => setIsOpen(false)} className="close-button">
@@ -105,7 +103,6 @@ export function FinancePopUp({ setIsOpen, onFinanceCreated, eventId }) {
 
                 <form className="popup-form__form" onSubmit={handleSubmit}>
 
-                    {/*  Если eventId не пришёл — показываем выбор */}
                     {!eventId && (
                         <div className="popup-form__type-section">
                             <div className="popup-headers">Событие</div>

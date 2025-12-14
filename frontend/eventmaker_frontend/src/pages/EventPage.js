@@ -49,7 +49,6 @@ export function EventPage() {
         loadData();
     }, [eventId]);
 
-    // Функция для обновления статуса задачи
     const toggleTaskStatus = async (taskId, currentStatus) => {
         try {
             let newStatus;
@@ -63,10 +62,8 @@ export function EventPage() {
                 newStatus = 'todo';
             }
 
-            // Получаем текущую задачу
             const currentTask = await eventAPI.getMyTask(taskId);
 
-            // Создаем обновленный объект
             const updatedTask = {
                 ...currentTask,
                 status: newStatus,
@@ -77,7 +74,6 @@ export function EventPage() {
 
             await eventAPI.changeTask(taskId, updatedTask);
 
-            // Обновляем локальное состояние
             setTaskList(prev => prev.map(task =>
                 task.id === taskId ? { ...task, status: newStatus } : task
             ));
@@ -87,7 +83,6 @@ export function EventPage() {
         }
     };
 
-    // Функция для добавления новой задачи
     const addNewTask = async (e) => {
         e.preventDefault();
         if (!newTaskTitle.trim()) {
@@ -109,7 +104,6 @@ export function EventPage() {
             const response = await eventAPI.createTask(newTask);
             setTaskList(prev => [response, ...prev]);
 
-            // Очищаем форму
             setNewTaskTitle("");
             setNewTaskDescription("");
 
@@ -119,7 +113,6 @@ export function EventPage() {
         }
     };
 
-    // Функция для удаления задачи
     const deleteTask = async (taskId) => {
         if (window.confirm('Вы уверены, что хотите удалить эту задачу?')) {
             try {
@@ -132,12 +125,10 @@ export function EventPage() {
         }
     };
 
-    // Функция для удаления события
     const deleteEvent = async () => {
         try {
             await eventAPI.deleteEvent(eventId);
-            alert('Событие успешно удалено');
-            navigate('/events'); // Перенаправляем на страницу событий
+            navigate('/events'); 
         } catch (error) {
             console.error('Ошибка при удалении события:', error);
             alert('Не удалось удалить событие');
@@ -146,8 +137,6 @@ export function EventPage() {
         }
     };
 
-    // Функция для изменения статуса события
-    // Функция для изменения статуса события
 const updateEventStatus = async (newStatus) => {
     try {
         console.log(`Изменение статуса события ${eventId} на ${newStatus}`);
@@ -174,7 +163,6 @@ const updateEventStatus = async (newStatus) => {
         setDataEvent(prev => ({ ...prev, status: newStatus }));
         setShowStatusMenu(false);
         
-        alert(`Статус события изменен на "${getEventStatusText(newStatus)}"`);
         
     } catch (error) {
         console.error('Ошибка при изменении статуса события:', error);
@@ -196,7 +184,6 @@ const updateEventStatus = async (newStatus) => {
                     console.log('PATCH успешен:', data);
                     setDataEvent(prev => ({ ...prev, status: newStatus }));
                     setShowStatusMenu(false);
-                    alert(`Статус изменен на "${getEventStatusText(newStatus)}" (через PATCH)`);
                 } else {
                     throw new Error('PATCH тоже не сработал');
                 }

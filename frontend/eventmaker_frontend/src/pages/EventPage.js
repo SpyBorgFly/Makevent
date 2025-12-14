@@ -14,6 +14,7 @@ export function EventPage() {
     const [newTaskDescription, setNewTaskDescription] = useState("");
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [showStatusMenu, setShowStatusMenu] = useState(false);
+    const [newTaskDueDate, setNewTaskDueDate] = useState("");
 
     const fetchData = async (id) => {
         try {
@@ -91,24 +92,36 @@ export function EventPage() {
         }
 
         try {
+            let dueDateISO = null;
+            if (newTaskDueDate) {
+                const date = new Date(newTaskDueDate);
+                date.setHours(12, 0, 0, 0); 
+                dueDateISO = date.toISOString();
+            }
+
             const newTask = {
                 event: parseInt(eventId),
                 title: newTaskTitle.trim(),
                 description: newTaskDescription.trim(),
                 status: 'todo',
                 priority: 'medium',
-                due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+                due_date: dueDateISO || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
                 assignees: []
             };
+
+            console.log('Отправляемая задача:', newTask);
 
             const response = await eventAPI.createTask(newTask);
             setTaskList(prev => [response, ...prev]);
 
+            // Сбрасываем поля формы
             setNewTaskTitle("");
             setNewTaskDescription("");
+            setNewTaskDueDate("");
 
         } catch (error) {
             console.error('Ошибка при создании задачи:', error);
+            console.error('Детали ошибки:', error.response?.data);
             alert('Не удалось создать задачу');
         }
     };
@@ -128,7 +141,7 @@ export function EventPage() {
     const deleteEvent = async () => {
         try {
             await eventAPI.deleteEvent(eventId);
-            navigate('/events'); 
+            navigate('/events');
         } catch (error) {
             console.error('Ошибка при удалении события:', error);
             alert('Не удалось удалить событие');
@@ -137,64 +150,64 @@ export function EventPage() {
         }
     };
 
-const updateEventStatus = async (newStatus) => {
-    try {
-        console.log(`Изменение статуса события ${eventId} на ${newStatus}`);
-        
-        const currentEvent = await eventAPI.getEvent(eventId);
-        console.log('Текущее событие с сервера:', currentEvent);
-        const updatedEvent = {
-            ...currentEvent,
-            status: newStatus,
-            created_by: typeof currentEvent.created_by === 'object' 
-                ? currentEvent.created_by.id 
-                : currentEvent.created_by
-        };
-        
-        delete updatedEvent.created_at;
-        delete updatedEvent.updated_at;
-        
-        console.log('Отправляемые данные для обновления:', updatedEvent);
-        
-        const response = await eventAPI.updateEvent(eventId, updatedEvent);
-        console.log('Событие успешно обновлено:', response);
-        
-        setDataEvent(prev => ({ ...prev, status: newStatus }));
-        setShowStatusMenu(false);
-        
-        
-    } catch (error) {
-        console.error('Ошибка при изменении статуса события:', error);
-        console.error('Детали ошибки:', error.response?.data);
-        
-        if (error.message.includes('400') || error.message.includes('PUT')) {
-            console.log('Пробуем PATCH...');
-            try {
-                const patchResponse = await fetch(`http://127.0.0.1:8000/api/events/${eventId}/`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ status: newStatus })
-                });
-                
-                if (patchResponse.ok) {
-                    const data = await patchResponse.json();
-                    console.log('PATCH успешен:', data);
-                    setDataEvent(prev => ({ ...prev, status: newStatus }));
-                    setShowStatusMenu(false);
-                } else {
-                    throw new Error('PATCH тоже не сработал');
+    const updateEventStatus = async (newStatus) => {
+        try {
+            console.log(`Изменение статуса события ${eventId} на ${newStatus}`);
+
+            const currentEvent = await eventAPI.getEvent(eventId);
+            console.log('Текущее событие с сервера:', currentEvent);
+            const updatedEvent = {
+                ...currentEvent,
+                status: newStatus,
+                created_by: typeof currentEvent.created_by === 'object'
+                    ? currentEvent.created_by.id
+                    : currentEvent.created_by
+            };
+
+            delete updatedEvent.created_at;
+            delete updatedEvent.updated_at;
+
+            console.log('Отправляемые данные для обновления:', updatedEvent);
+
+            const response = await eventAPI.updateEvent(eventId, updatedEvent);
+            console.log('Событие успешно обновлено:', response);
+
+            setDataEvent(prev => ({ ...prev, status: newStatus }));
+            setShowStatusMenu(false);
+
+
+        } catch (error) {
+            console.error('Ошибка при изменении статуса события:', error);
+            console.error('Детали ошибки:', error.response?.data);
+
+            if (error.message.includes('400') || error.message.includes('PUT')) {
+                console.log('Пробуем PATCH...');
+                try {
+                    const patchResponse = await fetch(`http://127.0.0.1:8000/api/events/${eventId}/`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ status: newStatus })
+                    });
+
+                    if (patchResponse.ok) {
+                        const data = await patchResponse.json();
+                        console.log('PATCH успешен:', data);
+                        setDataEvent(prev => ({ ...prev, status: newStatus }));
+                        setShowStatusMenu(false);
+                    } else {
+                        throw new Error('PATCH тоже не сработал');
+                    }
+                } catch (patchError) {
+                    console.error('PATCH failed:', patchError);
+                    alert('Не удалось изменить статус события. Проверьте консоль для деталей.');
                 }
-            } catch (patchError) {
-                console.error('PATCH failed:', patchError);
-                alert('Не удалось изменить статус события. Проверьте консоль для деталей.');
+            } else {
+                alert('Не удалось изменить статус события: ' + error.message);
             }
-        } else {
-            alert('Не удалось изменить статус события: ' + error.message);
         }
-    }
-};
+    };
 
     const formatDate = (dateString) => {
         if (!dateString) return 'Без срока';
@@ -383,6 +396,15 @@ const updateEventStatus = async (newStatus) => {
                                     onChange={(e) => setNewTaskTitle(e.target.value)}
                                     required
                                 />
+                                <input
+                                    type="date"
+                                    className="date-input"
+                                    placeholder="Дедлайн"
+                                    value={newTaskDueDate}
+                                    onChange={(e) => setNewTaskDueDate(e.target.value)}
+                                    min={new Date().toISOString().split('T')[0]} // Нельзя выбрать прошедшую дату
+                                    title="Выберите дату дедлайна"
+                                />
                                 <button type="submit" className="add-task-btn">
                                     Добавить
                                 </button>
@@ -396,7 +418,6 @@ const updateEventStatus = async (newStatus) => {
                             />
                         </form>
 
-                        {/* Список задач */}
                         <div className="task__list">
                             {/* Задачи к выполнению */}
                             {todoTasks.length > 0 && (

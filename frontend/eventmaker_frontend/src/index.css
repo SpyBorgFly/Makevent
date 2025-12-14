@@ -2522,4 +2522,52 @@ body {
     .plus-symbol {
         font-size: 28px;
     }
+
+    .header-event__section {
+        padding: 0px 16px;
+    }
+
+    .event__widget {
+        padding: 0px 16px;
+    }
+
+    .main__container {
+        margin-bottom: 60px;
+    }
+}
+.status-btn {
+    color: white;
+}
+
+.date-input {
+    padding: 10px 15px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: white;
+    color: #374151;
+    cursor: pointer;
+    min-width: 120px;
+    transition: border-color 0.3s;
+}
+
+.date-input:hover {
+    border-color: #6366F1;
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: #6366F1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .date-input {
+        width: 100%;
+    }
 }

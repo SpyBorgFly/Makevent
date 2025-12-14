@@ -313,10 +313,6 @@ export function HomePage() {
                     </section>
                 </div>
 
-                <Link to="/events/create" className="create-event-button shadow-glass">
-                    <div className="plus-symbol">+</div>
-                    <span className="create-event-text">Создать ивент</span>
-                </Link>
             </main>
             <MobileHeader />
         </>

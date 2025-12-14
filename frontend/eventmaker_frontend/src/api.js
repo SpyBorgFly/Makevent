@@ -12,40 +12,40 @@ const api = axios.create({
 });
 
 const apiRequest = async (url, options = {}) => {
-  try {
-    if (options.data) {
+    try {
+        if (options.data) {
+        }
+
+        const response = await api.request({
+            url,
+            ...options,
+        });
+
+        return response.data;
+
+    } catch (error) {
+        console.error('=== API ERROR DETAILS ===');
+        console.error('URL:', url);
+        console.error('Method:', options.method);
+        console.error('Request Data:', options.data);
+
+        if (error.response) {
+            console.error('Response Status:', error.response.status);
+            console.error('Response Data:', error.response.data);
+            console.error('Response Headers:', error.response.headers);
+
+            const errorMessage = error.response.data?.detail ||
+                JSON.stringify(error.response.data) ||
+                error.message;
+            throw new Error(`HTTP error! status: ${error.response.status} - ${errorMessage}`);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+            throw new Error('Сервер не отвечает. Проверьте, что Django сервер запущен на порту 8000');
+        } else {
+            console.error('Request setup error:', error.message);
+            throw new Error(`Ошибка запроса: ${error.message}`);
+        }
     }
-    
-    const response = await api.request({
-      url,
-      ...options,
-    });
-    
-    return response.data;
-    
-  } catch (error) {
-    console.error('=== API ERROR DETAILS ===');
-    console.error('URL:', url);
-    console.error('Method:', options.method);
-    console.error('Request Data:', options.data);
-    
-    if (error.response) {
-      console.error('Response Status:', error.response.status);
-      console.error('Response Data:', error.response.data);
-      console.error('Response Headers:', error.response.headers);
-      
-      const errorMessage = error.response.data?.detail || 
-                          JSON.stringify(error.response.data) || 
-                          error.message;
-      throw new Error(`HTTP error! status: ${error.response.status} - ${errorMessage}`);
-    } else if (error.request) {
-      console.error('No response received:', error.request);
-      throw new Error('Сервер не отвечает. Проверьте, что Django сервер запущен на порту 8000');
-    } else {
-      console.error('Request setup error:', error.message);
-      throw new Error(`Ошибка запроса: ${error.message}`);
-    }
-  }
 };
 
 export const eventAPI = {
@@ -81,7 +81,16 @@ export const eventAPI = {
             method: 'POST',
             data: { ...data, event: eventId },
         }),
-    getVipFinances: () => apiRequest('/finance/summary/', {method: 'GET'},)
+    getFinanceReport: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return apiRequest(`/finance/report/?${queryString}`, {
+            method: 'GET'
+        });
+    },
 };
 
 export default eventAPI;
+
+
+
+

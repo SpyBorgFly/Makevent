@@ -2402,3 +2402,124 @@ body {
         font-size: 13px;
     }
 }
+
+/* Loading */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text-secondary);
+    font-size: 16px;
+}
+
+/* No events/deadlines messages */
+.no-events-message,
+.no-deadlines-message {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+/* Event description enhancements */
+.card-event-description {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.card-event-description__event {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    opacity: 0.8;
+}
+
+/* Status Colors */
+.card-event-status.error {
+    background-color: #FEF3C7;
+    color: #D97706;
+}
+
+.card-event-status.work {
+    background-color: #DBEAFE;
+    color: #2563EB;
+}
+
+.card-event-status.notes {
+    background-color: #D1FAE5;
+    color: #059669;
+}
+
+.card-event-status.cancelled {
+    background-color: #F3F4F6;
+    color: #6B7280;
+    text-decoration: line-through;
+}
+
+/* Count boxes */
+.main__top-section-event-box-count.deadline {
+    color: #DC2626;
+}
+
+/* Create Event Button */
+.create-event-button {
+    position: fixed;
+    bottom: 100px; /* Выше мобильного хедера */
+    right: 20px;
+    background: var(--color-blue);
+    color: white;
+    border: none;
+    padding: 16px 24px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+    z-index: 100;
+}
+
+.create-event-button:hover {
+    background: var(--color-blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+}
+
+.plus-symbol {
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.create-event-text {
+    white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .create-event-button {
+        bottom: 80px;
+        right: 15px;
+        padding: 14px 20px;
+        font-size: 14px;
+    }
+    
+    .create-event-text {
+        display: none;
+    }
+    
+    .create-event-button {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        justify-content: center;
+        padding: 0;
+    }
+    
+    .plus-symbol {
+        font-size: 28px;
+    }
+}

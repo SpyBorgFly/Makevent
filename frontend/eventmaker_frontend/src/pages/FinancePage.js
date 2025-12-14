@@ -225,8 +225,6 @@ export function FinancePage() {
                                 )}
                             </div>
                         </div>
-                        
-                        {/* Таблица транзакций */}
                         <div className="widgets__finance-transactions shadow-glass">
                             <div className="transactions-header-section">
                                 <h2 className="widgets__finance-transactions-header">

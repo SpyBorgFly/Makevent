@@ -13,9 +13,7 @@ const api = axios.create({
 
 const apiRequest = async (url, options = {}) => {
   try {
-    console.log(`API Request: ${options.method} ${url}`);
     if (options.data) {
-      console.log('Request Data:', options.data);
     }
     
     const response = await api.request({
@@ -23,7 +21,6 @@ const apiRequest = async (url, options = {}) => {
       ...options,
     });
     
-    console.log(`API Response (${response.status}):`, response.data);
     return response.data;
     
   } catch (error) {

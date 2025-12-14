@@ -146,7 +146,6 @@ const updateEventStatus = async (newStatus) => {
         const updatedEvent = {
             ...currentEvent,
             status: newStatus,
-            // Убедимся что created_by это число, а не объект
             created_by: typeof currentEvent.created_by === 'object' 
                 ? currentEvent.created_by.id 
                 : currentEvent.created_by

@@ -121,12 +121,18 @@ export function HomePage() {
 
     const getNearestDeadlines = () => {
         if (!allTasks || allTasks.length === 0) return [];
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
         const tasksWithDeadlines = allTasks.filter(task => {
             if (!task.due_date || task.status === 'done' || task.status === 'cancelled') {
                 return false;
             }
+
             const deadline = new Date(task.due_date);
-            const today = new Date();
+            deadline.setHours(0, 0, 0, 0);
+
             return deadline >= today;
         });
 

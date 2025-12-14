@@ -981,8 +981,6 @@ body {
         grid-template-columns: 1fr;
     }
 
-    .widgets__finance-transaction {}
-
     .widgets__finance-budgets {
         grid-template-columns: 1fr;
         gap: 18px;
@@ -1152,7 +1150,6 @@ body {
     color: var(--color-text-muted);
 }
 
-/* Task Widget */
 .task__widget {
     background: var(--color-bg-glass);
     border: 1px solid rgba(44, 62, 80, 0.10);
@@ -1184,7 +1181,6 @@ body {
     font-weight: normal;
 }
 
-/* Форма добавления задачи */
 .add-task-form {
     background: white;
     border: 1px solid rgba(44, 62, 80, 0.08);
@@ -1246,7 +1242,6 @@ body {
     background: var(--color-blue-dark);
 }
 
-/* Task Groups */
 .task-group {
     margin-bottom: 32px;
 }
@@ -1270,7 +1265,6 @@ body {
     border-bottom-color: rgba(16, 185, 129, 0.2);
 }
 
-/* Task Item */
 .task-item {
     background: white;
     border: 1px solid rgba(44, 62, 80, 0.08);
@@ -1302,7 +1296,6 @@ body {
     flex: 1;
 }
 
-/* Checkbox */
 .task-checkbox-container {
     margin-top: 4px;
 }
@@ -1358,7 +1351,6 @@ body {
     display: block;
 }
 
-/* Task Info */
 .task-info {
     flex: 1;
     display: flex;
@@ -1449,7 +1441,6 @@ body {
     color: var(--color-text-secondary);
 }
 
-/* Task Actions */
 .task-actions {
     display: flex;
     align-items: center;
@@ -1495,7 +1486,6 @@ body {
     color: white;
 }
 
-/* No Tasks */
 .tasks__none {
     text-align: center;
     padding: 40px 20px;
@@ -1527,7 +1517,6 @@ body {
     margin: 0;
 }
 
-/* Event Status */
 .event-status-badges {
     display: flex;
     align-items: center;
@@ -1543,7 +1532,6 @@ body {
     border-radius: 12px;
 }
 
-/* Task Group Titles Colors */
 .task-group__title.todo {
     color: #6B7280;
     border-bottom-color: rgba(107, 114, 128, 0.2);
@@ -1564,7 +1552,6 @@ body {
     border-bottom-color: rgba(107, 114, 128, 0.2);
 }
 
-/* Status Badge Colors */
 .status-badge.todo {
     background: rgba(107, 114, 128, 0.1);
     color: #6B7280;
@@ -1586,7 +1573,6 @@ body {
     text-decoration: line-through;
 }
 
-/* Task Item States */
 .task-item.cancelled {
     background: rgba(107, 114, 128, 0.05);
     border-color: rgba(107, 114, 128, 0.2);
@@ -1598,7 +1584,6 @@ body {
     color: #6B7280;
 }
 
-/* Action Button */
 .task-action-btn {
     background: transparent;
     color: var(--color-blue);
@@ -1666,7 +1651,7 @@ body {
 
 
 /*-----------------------------------------Fincances-------------------------------------*/
-/* Budgets Section */
+
 .widgets__finance-budgets {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1707,7 +1692,6 @@ body {
     margin-top: 8px;
 }
 
-/* Event Budgets */
 .widgets__finance-summary {
     padding: 24px;
     margin-bottom: 24px;
@@ -1770,7 +1754,6 @@ body {
     margin-top: 2px;
 }
 
-/* Transactions */
 .transactions-header-section {
     display: flex;
     justify-content: space-between;
@@ -1810,7 +1793,6 @@ body {
     font-weight: 500;
 }
 
-/* No data messages */
 .no-budgets-message,
 .no-transactions-message {
     text-align: center;
@@ -1837,7 +1819,6 @@ body {
     margin-top: 12px;
 }
 
-/* Table styles (добавьте к существующим) */
 .table__item {
     padding: 14px 12px;
 }
@@ -1847,7 +1828,6 @@ body {
     text-align: right;
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
     .widgets__finance-budgets {
         grid-template-columns: 1fr;
@@ -1877,7 +1857,6 @@ body {
     }
 }
 
-/* Event Header */
 .event-header-top {
     display: flex;
     justify-content: space-between;
@@ -1900,7 +1879,6 @@ body {
     align-items: center;
 }
 
-/* Status Selector */
 .status-selector-wrapper {
     position: relative;
 }
@@ -1947,7 +1925,6 @@ body {
     margin-top: 2px;
 }
 
-/* Status Menu */
 .status-menu {
     position: absolute;
     top: 100%;
@@ -2009,7 +1986,6 @@ body {
     background-color: #6B7280;
 }
 
-/* Delete Event Button */
 .delete-event-btn {
     background: transparent;
     color: #EF4444;
@@ -2030,7 +2006,6 @@ body {
     color: white;
 }
 
-/* Event Meta */
 .event-meta {
     display: flex;
     flex-wrap: wrap;
@@ -2051,7 +2026,6 @@ body {
     gap: 6px;
 }
 
-/* Delete Confirmation Modal */
 .delete-confirm-overlay {
     position: fixed;
     top: 0;
@@ -2148,7 +2122,6 @@ body {
     }
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
     .event-header-top {
         flex-direction: column;
@@ -2182,7 +2155,6 @@ body {
     }
 }
 
-/* Progress Bar Styles */
 .widgets__event-card-bar {
     display: flex;
     align-items: center;
@@ -2207,7 +2179,6 @@ body {
     text-align: right;
 }
 
-/* Event Type */
 .widgets__event-card-type {
     font-size: 14px;
     color: var(--color-text-secondary);
@@ -2219,7 +2190,6 @@ body {
     font-weight: 600;
 }
 
-/* Status Colors */
 .card-event-status.error {
     background-color: #FEF3C7;
     color: #D97706;
@@ -2240,7 +2210,6 @@ body {
     color: #6B7280;
 }
 
-/* No Events Message */
 .no-events-message {
     text-align: center;
     padding: 40px 20px;
@@ -2249,7 +2218,6 @@ body {
     grid-column: 1 / -1;
 }
 
-/* Search Results Info */
 .search-results-info {
     display: flex;
     justify-content: space-between;
@@ -2276,7 +2244,6 @@ body {
     background: #5a6268;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .widgets__event-card-bar {
         flex-direction: column;
@@ -2390,7 +2357,7 @@ body {
     }
     
     .progress-info {
-        flex-direction: row; /* Оставляем в строке на мобильных */
+        flex-direction: row;
         justify-content: space-between;
     }
     
@@ -2403,7 +2370,6 @@ body {
     }
 }
 
-/* Loading */
 .loading {
     text-align: center;
     padding: 40px;
@@ -2411,7 +2377,6 @@ body {
     font-size: 16px;
 }
 
-/* No events/deadlines messages */
 .no-events-message,
 .no-deadlines-message {
     text-align: center;
@@ -2420,7 +2385,6 @@ body {
     font-style: italic;
 }
 
-/* Event description enhancements */
 .card-event-description {
     display: flex;
     flex-direction: column;
@@ -2434,7 +2398,6 @@ body {
     opacity: 0.8;
 }
 
-/* Status Colors */
 .card-event-status.error {
     background-color: #FEF3C7;
     color: #D97706;
@@ -2456,15 +2419,13 @@ body {
     text-decoration: line-through;
 }
 
-/* Count boxes */
 .main__top-section-event-box-count.deadline {
     color: #DC2626;
 }
 
-/* Create Event Button */
 .create-event-button {
     position: fixed;
-    bottom: 100px; /* Выше мобильного хедера */
+    bottom: 100px;
     right: 20px;
     background: var(--color-blue);
     color: white;
@@ -2498,7 +2459,6 @@ body {
     white-space: nowrap;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .create-event-button {
         bottom: 80px;
@@ -2572,7 +2532,6 @@ body {
     }
 }
 
-/* Стили для страницы заметки */
 .note-header {
     display: flex;
     justify-content: space-between;
@@ -2651,7 +2610,6 @@ body {
     background-color: #FEE2E2;
 }
 
-/* Теги заметки */
 .note-tags {
     display: flex;
     flex-wrap: wrap;
@@ -2667,7 +2625,6 @@ body {
     font-size: 14px;
 }
 
-/* Содержимое заметки */
 .note-content {
     background-color: white;
     border-radius: 12px;
@@ -2699,7 +2656,6 @@ body {
     font-style: italic;
 }
 
-/* Контейнеры для состояний */
 .loading, .error-container {
     display: flex;
     flex-direction: column;
@@ -2744,7 +2700,6 @@ body {
     font-family: "Montserrat", sans-serif;
 }
 
-/* Стили для страницы заметок */
 .notes-count {
     font-size: 14px;
     color: #6B7280;
@@ -2832,7 +2787,6 @@ body {
     margin-left: auto;
 }
 
-/* Стили для пустого состояния */
 .empty-notes {
     grid-column: 1 / -1;
     text-align: center;
@@ -2873,7 +2827,6 @@ body {
     background-color: #4F46E5;
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
     .notes-widgets {
         grid-template-columns: 1fr;
@@ -2918,9 +2871,7 @@ body {
     border-width: 2px;
 }
 
-/* Обновлённые стили для NotePage */
 
-/* Кнопка перехода к событию */
 .event-link-btn {
     background-color: #E0E7FF;
     color: #4F46E5;
@@ -2941,7 +2892,6 @@ body {
     text-decoration: none;
 }
 
-/* Секция с информацией о событии */
 .event-info-section {
     background-color: #F8FAFC;
     border-radius: 10px;
@@ -2995,7 +2945,7 @@ body {
     font-size: 14px;
 }
 
-/* Секция с тегами */
+
 .note-tags-section {
     margin-bottom: 25px;
 }
@@ -3030,7 +2980,7 @@ body {
     background-color: #E5E7EB;
 }
 
-/* Содержимое заметки */
+
 .content-paragraphs {
     display: flex;
     flex-direction: column;
@@ -3043,7 +2993,6 @@ body {
     color: #4B5563;
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
     .event-info-content {
         flex-direction: column;
@@ -3080,4 +3029,13 @@ body {
 .no-events-message {
     font-style: normal;
     font-weight: 600;
+}
+
+.task-item {
+    overflow: hidden;
+}
+
+.task-description {
+    max-width: 630px;
+    overflow: hidden;
 }

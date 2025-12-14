@@ -11,11 +11,22 @@ export function FinancePage() {
     const [totalIncome, setTotalIncome] = useState(0);
     const [totalExpense, setTotalExpense] = useState(0);
     const [eventBudgets, setEventBudgets] = useState([]);
+    const [vipFinances, setVipFinances] = useState([])
 
     const fetchFinances = async () => {
         try {
             const response = await eventAPI.getMyFinances();
             return response || [];
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
+    }
+
+    const fetchVipFinances = async () => {
+        try {
+            const responseVip = await eventAPI.getVipFinances();
+            return responseVip || [];
         } catch (error) {
             console.log(error);
             return [];
@@ -92,6 +103,7 @@ export function FinancePage() {
 
                 setDataFinances(finances);
                 setEvents(eventMap);
+                setVipFinances(fetchVipFinances);
 
                 const totals = calculateTotals(finances);
                 setTotalIncome(totals.income);

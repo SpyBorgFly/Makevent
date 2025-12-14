@@ -13,7 +13,6 @@ export function NotePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Загрузка заметки и события
     useEffect(() => {
         const fetchData = async () => {
             if (!noteId) return;
@@ -117,7 +116,6 @@ export function NotePage() {
     }
 
     const tags = splitTags(noteData.tags);
-    const eventTitle = eventData?.title || `Событие #${noteData.event}`;
 
     return (
         <>

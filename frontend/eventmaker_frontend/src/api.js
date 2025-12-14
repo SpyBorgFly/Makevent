@@ -81,6 +81,7 @@ export const eventAPI = {
             method: 'POST',
             data: { ...data, event: eventId },
         }),
+    getVipFinances: () => apiRequest('/finance/summary/', {method: 'GET'},)
 };
 
 export default eventAPI;

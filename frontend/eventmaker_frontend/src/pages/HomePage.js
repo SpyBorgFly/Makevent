@@ -121,7 +121,6 @@ export function HomePage() {
 
     const getNearestDeadlines = () => {
         if (!allTasks || allTasks.length === 0) return [];
-
         const tasksWithDeadlines = allTasks.filter(task => {
             if (!task.due_date || task.status === 'done' || task.status === 'cancelled') {
                 return false;

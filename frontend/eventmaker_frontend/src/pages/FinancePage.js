@@ -249,7 +249,7 @@ export function FinancePage() {
                                                 <th className="table__item-header">Дата</th>
                                                 <th className="table__item-header">Событие</th>
                                                 <th className="table__item-header">Описание</th>
-                                                <th className="table__item-header">Сумма</th>
+                                                <th className="table__item-header last-summa">Сумма</th>
                                             </tr>
                                         </thead>
                                         <tbody>

@@ -151,7 +151,7 @@ export function NotePage() {
                     )}
 
                     {/* Содержимое заметки */}
-                    <section className="note-content">
+                    <section className="note-content shadow-glass">
                         <h2 className="content-title">Содержимое:</h2>
                         <div className="note-content-text">
                             {noteData.content ? (

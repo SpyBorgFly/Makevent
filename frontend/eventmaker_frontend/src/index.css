@@ -2739,3 +2739,181 @@ body {
 .back-btn:hover {
     background-color: #4F46E5;
 }
+
+.status-btn {
+    font-family: "Montserrat", sans-serif;
+}
+
+/* Стили для страницы заметок */
+.notes-count {
+    font-size: 14px;
+    color: #6B7280;
+    margin-top: 5px;
+    display: block;
+}
+
+.notes-widgets {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.notes-widgets__widget {
+    display: block;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid #E5E7EB;
+}
+
+.notes-widgets__widget:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.notes-widgets__widget-header {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 10px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.notes-widgets__widget-description {
+    font-size: 14px;
+    color: #4B5563;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    min-height: 60px;
+}
+
+.notes-widgets__widget-description .no-content {
+    color: #9CA3AF;
+    font-style: italic;
+}
+
+.notes-widgets__widget-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tag {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.event-tag .tag {
+    background-color: #E0E7FF;
+    color: #4F46E5;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.note-date {
+    font-size: 12px;
+    color: #6B7280;
+    margin-left: auto;
+}
+
+/* Стили для пустого состояния */
+.empty-notes {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    background-color: white;
+    border-radius: 12px;
+    border: 2px dashed #E5E7EB;
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.empty-notes h3 {
+    font-size: 20px;
+    color: #111827;
+    margin-bottom: 10px;
+}
+
+.empty-notes p {
+    color: #6B7280;
+    margin-bottom: 20px;
+}
+
+.create-first-note-btn {
+    background-color: #6366F1;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.create-first-note-btn:hover {
+    background-color: #4F46E5;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .notes-widgets {
+        grid-template-columns: 1fr;
+    }
+    
+    .notes-widgets__widget-tags {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .note-date {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+}
+
+.create-first-note-btn {
+    font-family: "Montserrat";
+    font-weight: 600;
+    background-color: var(--color-blue);
+}
+
+.table__item {
+    text-align: left;
+}
+
+.last-summa {
+    text-align: center;
+}
+
+.table-finance-section {
+    text-align: center;
+}
+
+.table__item:nth-child(4) {
+    text-align: center;
+}
+
+.task-action-btn {
+    font-family: "Montserrat";
+    font-weight: 600;
+    border-width: 2px;
+}

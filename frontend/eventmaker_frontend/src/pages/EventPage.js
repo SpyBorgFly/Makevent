@@ -95,7 +95,7 @@ export function EventPage() {
             let dueDateISO = null;
             if (newTaskDueDate) {
                 const date = new Date(newTaskDueDate);
-                date.setHours(12, 0, 0, 0); 
+                date.setHours(12, 0, 0, 0);
                 dueDateISO = date.toISOString();
             }
 
@@ -249,7 +249,7 @@ export function EventPage() {
         switch (status) {
             case 'planned': return 'orange';
             case 'in_progress': return 'blue';
-            case 'completed': return 'green';
+            case 'done': return 'green';
             case 'cancelled': return 'gray';
             default: return 'blue';
         }
@@ -337,7 +337,9 @@ export function EventPage() {
                                 {dataEvent.event_time && `, ${dataEvent.event_time.slice(0, 5)}`}
                             </span>
                             <span className="event-type">
-                                {dataEvent.event_type}
+                                {dataEvent.event_type === 'webinar' ?
+                                    'Вебинар' : dataEvent.event_type === 'teambuilding' ?
+                                        'Тимбилдинг' : dataEvent.event_type === 'conference' ? 'Конференция' : ''}
                             </span>
                             <span className="event-created">
                                 Создано: {new Date(dataEvent.created_at).toLocaleDateString('ru-RU')}
@@ -558,14 +560,6 @@ function TaskItem({ task, onToggle, onDelete, formatDate, getPriorityColor, getS
                     <div className="task-header">
                         <span className="task-title">{task.title}</span>
                         <div className="task-tags">
-                            <span
-                                className="priority-tag"
-                                style={{ backgroundColor: getPriorityColor(task.priority) + '20', color: getPriorityColor(task.priority) }}
-                            >
-                                {task.priority === 'urgent' ? 'Срочный' :
-                                    task.priority === 'high' ? 'Высокий' :
-                                        task.priority === 'medium' ? 'Средний' : 'Низкий'}
-                            </span>
                             {task.due_date && (
                                 <span className="due-date-tag">
                                     📅 {formatDate(task.due_date)}

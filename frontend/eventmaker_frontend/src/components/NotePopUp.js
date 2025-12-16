@@ -19,10 +19,30 @@ export function NotePopUp({ setIsOpen, eventId, onNoteCreated }) {
         if (!eventId) {
             const loadEvents = async () => {
                 try {
+                    console.log('NotePopUp: Загрузка событий...');
                     const data = await eventAPI.getAllEvents();
-                    setEvents(data);
+                    
+                    // ВАЖНО: Защита от не-массивов
+                    console.log('NotePopUp: Полученные данные:', data);
+                    console.log('NotePopUp: Тип данных:', typeof data);
+                    console.log('NotePopUp: Это массив?', Array.isArray(data));
+                    
+                    // Если data - объект с полем results, берем results
+                    let eventsArray = [];
+                    if (data && typeof data === 'object') {
+                        if (Array.isArray(data.results)) {
+                            eventsArray = data.results;
+                        } else if (Array.isArray(data)) {
+                            eventsArray = data;
+                        } else if (data.results !== undefined) {
+                            eventsArray = data.results || [];
+                        }
+                    }
+                    
+                    console.log('NotePopUp: Обработанные события:', eventsArray.length);
+                    setEvents(eventsArray);
                 } catch (error) {
-                    console.error(error);
+                    console.error('NotePopUp: Ошибка загрузки событий:', error);
                     alert("Не удалось загрузить список событий");
                 } finally {
                     setLoadingEvents(false);
@@ -104,7 +124,8 @@ export function NotePopUp({ setIsOpen, eventId, onNoteCreated }) {
                                     required
                                 >
                                     <option value="">Выберите событие</option>
-                                    {events.map(ev => (
+                                    {/* ЗАЩИТА: events гарантированно массив */}
+                                    {Array.isArray(events) && events.map(ev => (
                                         <option key={ev.id} value={ev.id}>
                                             {ev.title}
                                         </option>

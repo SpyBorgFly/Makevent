@@ -1,6 +1,35 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
+
+class TelegramUser(models.Model):
+    telegram_id = models.BigIntegerField(unique=True, primary_key=True)
+    username = models.CharField(max_length=255, blank=True, null=True)
+    first_name = models.CharField(max_length=255, blank=True, null=True)
+    last_name = models.CharField(max_length=255, blank=True, null=True)
+    language_code = models.CharField(max_length=10, blank=True, null=True)
+    is_premium = models.BooleanField(default=False)
+    
+    # Связь с Django User (опционально)
+    django_user = models.OneToOneField(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name='telegram_profile'
+    )
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.telegram_id} - {self.username or self.first_name}"
+    
+    class Meta:
+        ordering = ['-created_at']
+
 
 class Event(models.Model):
     EVENT_TYPES = [

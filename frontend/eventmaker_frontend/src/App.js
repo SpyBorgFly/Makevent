@@ -5,8 +5,21 @@ import { FinancePage } from "./pages/FinancePage";
 import { EventPage } from "./pages/EventPage";
 import { NotesPage } from "./pages/NotesPage"
 import { NotePage } from "./pages/NotePage";
+import { useEffect } from 'react';
+import { initTelegramAuth } from './services/telegramAuth';
 
 function App() {
+    useEffect(() => {
+        // При запуске приложения пытаемся авторизоваться
+        initTelegramAuth().then(token => {
+            if (token) {
+                console.log('✅ Успешная авторизация! Токен:', token);
+            } else {
+                console.log('ℹ️ Авторизация не удалась или не требуется');
+            }
+        });
+    }, []);
+
     return (
         <Routes>
             <Route index element={<HomePage />} />

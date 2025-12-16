@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import Event, Task, FinanceItem, Note
+from .models import Event, Task, FinanceItem, Note, TelegramUser
+from django.contrib.auth.models import User
+
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
@@ -60,3 +62,24 @@ class NoteSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_by', 'created_at', 'updated_at']
 
 
+class TelegramUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TelegramUser
+        fields = ['telegram_id', 'username', 'first_name', 'last_name', 'language_code', 'is_premium']
+
+class TelegramAuthSerializer(serializers.Serializer):
+    """Сериализатор для данных аутентификации Telegram"""
+    initData = serializers.CharField(required=True)
+    
+    def validate(self, data):
+        init_data = data.get('initData')
+        if not init_data:
+            raise serializers.ValidationError("initData is required")
+        return data
+
+class UserSerializer(serializers.ModelSerializer):
+    telegram_profile = TelegramUserSerializer(read_only=True)
+    
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'telegram_profile']

@@ -10,13 +10,21 @@ export function NotesPage() {
     const [dataNotes, setDataNotes] = useState([]);
     const [events, setEvents] = useState({});
     const [loading, setLoading] = useState(true);
+    const [authError, setAuthError] = useState(false);
 
     const fetchNotes = async () => {
         try {
             const response = await eventAPI.getAllNotes();
-            return response || [];
+            // ЗАЩИТА: Всегда возвращаем массив
+            return Array.isArray(response) ? response : [];
         } catch (error) {
-            console.log(error);
+            console.log('Ошибка загрузки заметок:', error);
+            
+            // Если ошибка 401 - нет авторизации
+            if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+                setAuthError(true);
+            }
+            
             return [];
         }
     }
@@ -25,12 +33,16 @@ export function NotesPage() {
         try {
             const response = await eventAPI.getAllEvents();
             const eventsMap = {};
-            response.forEach(event => {
+            
+            // ЗАЩИТА: response должен быть массивом
+            const eventsArray = Array.isArray(response) ? response : [];
+            
+            eventsArray.forEach(event => {
                 eventsMap[event.id] = event.title;
             });
             return eventsMap;
         } catch (error) {
-            console.log(error);
+            console.log('Ошибка загрузки событий:', error);
             return {};
         }
     }
@@ -39,6 +51,16 @@ export function NotesPage() {
         const loadData = async () => {
             setLoading(true);
             try {
+                // ПРОВЕРКА: Есть ли токен?
+                const token = localStorage.getItem('auth_token');
+                console.log('NotesPage: Токен в localStorage:', token ? 'Есть' : 'Нет');
+                
+                if (!token) {
+                    setAuthError(true);
+                    setLoading(false);
+                    return;
+                }
+                
                 const [notesData, eventsData] = await Promise.all([
                     fetchNotes(),
                     fetchEvents()
@@ -46,6 +68,7 @@ export function NotesPage() {
 
                 setDataNotes(notesData);
                 setEvents(eventsData);
+                setAuthError(false);
             } catch (error) {
                 console.error('Ошибка загрузки данных:', error);
             } finally {
@@ -65,11 +88,22 @@ export function NotesPage() {
     };
 
     const handleCreateNote = () => {
+        const token = localStorage.getItem('auth_token');
+        if (!token) {
+            setAuthError(true);
+            alert('Сначала выполните авторизацию через Telegram!');
+            return;
+        }
         setIsOpen(true);
     }
 
     const handleNoteCreated = () => {
         refreshNotes();
+    }
+
+    const handleAuthRedirect = () => {
+        // Перенаправляем на главную для авторизации
+        window.location.href = '/';
     }
 
     const splitTags = (tagsString) => {
@@ -90,6 +124,35 @@ export function NotesPage() {
                 <main className="main">
                     <div className="main__container">
                         <div className="loading">Загрузка заметок...</div>
+                    </div>
+                </main>
+                <MobileHeader />
+            </>
+        );
+    }
+
+    if (authError) {
+        return (
+            <>
+                <Header />
+                <main className="main">
+                    <div className="main__container">
+                        <div className="auth-error-container">
+                            <div className="auth-error-icon">🔐</div>
+                            <h2>Требуется авторизация</h2>
+                            <p>Для просмотра заметок необходимо войти через Telegram</p>
+                            <button 
+                                className="auth-button"
+                                onClick={handleAuthRedirect}
+                            >
+                                Перейти к авторизации
+                            </button>
+                            <p className="auth-hint">
+                                Если авторизация не работает, попробуйте:
+                                <br/>1. Нажать "Войти через Telegram" на главной странице
+                                <br/>2. Обновить Mini App (потянуть вниз)
+                            </p>
+                        </div>
                     </div>
                 </main>
                 <MobileHeader />

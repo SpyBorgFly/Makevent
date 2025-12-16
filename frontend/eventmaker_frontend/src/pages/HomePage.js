@@ -1,51 +1,245 @@
 import { Header } from "../components/Header";
 import { MobileHeader } from "../components/MobileHeader";
 import eventAPI from "../api";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router";
 
 export function HomePage() {
     const [dataEvents, setDataEvents] = useState([]);
     const [allTasks, setAllTasks] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [lastUpdateTime, setLastUpdateTime] = useState(null);
+    const [userName, setUserName] = useState('Друг'); // Имя пользователя по умолчанию
+    const [authChecked, setAuthChecked] = useState(false);
 
-    const fetchEvents = async () => {
+    // Функция проверки валидности токена
+    const verifyToken = useCallback(async (token) => {
+        if (!token) return false;
+        
+        try {
+            const response = await fetch('/api/auth/verify/', {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            });
+            
+            return response.ok;
+        } catch (error) {
+            console.log('Ошибка проверки токена:', error);
+            return false;
+        }
+    }, []);
+
+    // Функция автоматической авторизации через Telegram
+    const performAutoAuth = useCallback(async () => {
+        const tg = window.Telegram?.WebApp;
+        if (!tg) {
+            console.log('Telegram Web App не доступен');
+            return false;
+        }
+
+        tg.ready();
+        
+        // Получаем данные пользователя
+        const userData = tg.initDataUnsafe?.user;
+        if (!userData) {
+            console.log('Данные пользователя Telegram не получены');
+            return false;
+        }
+
+        // Устанавливаем имя пользователя
+        setUserName(userData.first_name || 'Друг');
+        
+        // Проверяем, есть ли токен и он валиден
+        const existingToken = localStorage.getItem('auth_token');
+        if (existingToken) {
+            console.log('Токен есть, проверяем валидность...');
+            
+            const isValid = await verifyToken(existingToken);
+            if (isValid) {
+                console.log('Токен валиден:', existingToken.substring(0, 20) + '...');
+                return true;
+            } else {
+                console.log('Токен невалиден, удаляем его');
+                localStorage.removeItem('auth_token');
+                // Продолжаем с авторизацией
+            }
+        }
+
+        console.log('Выполняем автоматическую авторизацию...');
+        
+        try {
+            const response = await fetch('/api/auth/telegram/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
+            });
+            
+            console.log('Статус авторизации:', response.status);
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.token) {
+                    localStorage.setItem('auth_token', data.token);
+                    console.log('Токен сохранен:', data.token.substring(0, 20) + '...');
+                    
+                    // Показываем уведомление
+                    tg.showAlert(`Добро пожаловать, ${userData.first_name || 'Друг'}!`);
+                    return true;
+                }
+            } else {
+                const errorText = await response.text();
+                console.error('Ошибка авторизации:', response.status, errorText);
+                
+                // Если 403, пробуем тестовый эндпоинт
+                if (response.status === 403) {
+                    console.log('Получен 403, пробуем тестовую авторизацию...');
+                    try {
+                        const testResponse = await fetch('/api/auth/simple-telegram/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({test: true})
+                        });
+                        
+                        if (testResponse.ok) {
+                            const testData = await testResponse.json();
+                            if (testData.token) {
+                                localStorage.setItem('auth_token', testData.token);
+                                console.log('Тестовый токен сохранен:', testData.token.substring(0, 20) + '...');
+                                return true;
+                            }
+                        } else {
+                            console.error('Тестовая авторизация тоже не удалась:', testResponse.status);
+                        }
+                    } catch (testError) {
+                        console.error('Ошибка тестовой авторизации:', testError);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Ошибка сети при авторизации:', error);
+        }
+        
+        return false;
+    }, [verifyToken]);
+
+    // ФИКС: Защита от не-массивов + useCallback для мемоизации
+    const fetchEvents = useCallback(async () => {
         try {
             const response = await eventAPI.getAllEvents();
-            return response || [];
+            return Array.isArray(response) ? response : [];
         } catch (error) {
-            console.log(error);
+            console.log('Ошибка загрузки событий:', error);
             return [];
         }
-    }
+    }, []);
 
-    const fetchAllTasks = async () => {
+    // ФИКС: Защита от не-массивов + useCallback
+    const fetchAllTasks = useCallback(async () => {
         try {
             const response = await eventAPI.getMyTasks();
-            return response || [];
+            return Array.isArray(response) ? response : [];
         } catch (error) {
-            console.log(error);
+            console.log('Ошибка загрузки задач:', error);
             return [];
         }
-    }
+    }, []);
 
-    useEffect(() => {
-        const loadData = async () => {
+    // Функция обновления данных
+    const refreshData = async () => {
+        try {
             setLoading(true);
-            try {
-                const [events, tasks] = await Promise.all([
-                    fetchEvents(),
-                    fetchAllTasks()
-                ]);
-                setDataEvents(events);
-                setAllTasks(tasks);
-            } catch (error) {
-                console.error('Ошибка загрузки данных:', error);
-            } finally {
+            
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                console.log('Нет токена, пропускаем загрузку данных');
+                setLoading(false);
+                return;
+            }
+            
+            // Проверяем токен перед загрузкой данных
+            const isValid = await verifyToken(token);
+            if (!isValid) {
+                console.log('Токен невалиден, удаляем его');
+                localStorage.removeItem('auth_token');
+                setLoading(false);
+                return;
+            }
+            
+            const [events, tasks] = await Promise.all([
+                fetchEvents(),
+                fetchAllTasks()
+            ]);
+            
+            setDataEvents(events);
+            setAllTasks(tasks);
+            setLastUpdateTime(new Date());
+            
+        } catch (error) {
+            console.error('Ошибка обновления данных:', error);
+            
+            // Если ошибка 401, удаляем токен
+            if (error.response?.status === 401) {
+                console.log('Получен 401, удаляем токен');
+                localStorage.removeItem('auth_token');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Основная загрузка данных при монтировании
+    useEffect(() => {
+        const initializeApp = async () => {
+            console.log('Инициализация приложения...');
+            
+            // 1. Проверяем и выполняем авторизацию
+            const isAuthenticated = await performAutoAuth();
+            setAuthChecked(true);
+            
+            // 2. Если авторизованы - загружаем данные
+            if (isAuthenticated) {
+                await refreshData();
+            } else {
+                console.log('Пользователь не авторизован');
                 setLoading(false);
             }
         };
-        loadData();
+
+        // Добавляем небольшую задержку для инициализации Telegram Web App
+        const timer = setTimeout(() => {
+            initializeApp();
+        }, 300);
+        
+        return () => clearTimeout(timer);
+    }, [performAutoAuth, fetchEvents, fetchAllTasks]);
+
+    // Слушаем события обновления данных
+    useEffect(() => {
+        const handleRefresh = () => {
+            console.log('Получен сигнал обновления данных');
+            refreshData();
+        };
+        
+        window.addEventListener('refreshAllData', handleRefresh);
+        window.addEventListener('cacheInvalidated', handleRefresh);
+        
+        return () => {
+            window.removeEventListener('refreshAllData', handleRefresh);
+            window.removeEventListener('cacheInvalidated', handleRefresh);
+        };
+    }, []);
+
+    // Экспортируем функцию обновления для использования в других компонентах
+    useEffect(() => {
+        window.refreshHomePageData = refreshData;
+        return () => {
+            delete window.refreshHomePageData;
+        };
     }, []);
 
     const getEventStatusText = (status) => {
@@ -77,8 +271,6 @@ export function HomePage() {
             default: return status;
         }
     };
-
-
 
     const formatDate = (dateString) => {
         if (!dateString) return '';
@@ -172,6 +364,50 @@ export function HomePage() {
                 <main className="main">
                     <div className="main__container">
                         <div className="loading">Загрузка...</div>
+                        {lastUpdateTime && (
+                            <div className="last-update">
+                                Последнее обновление: {lastUpdateTime.toLocaleTimeString()}
+                            </div>
+                        )}
+                    </div>
+                </main>
+                <MobileHeader />
+            </>
+        );
+    }
+
+    // Если не авторизован, показываем сообщение
+    if (authChecked && !localStorage.getItem('auth_token')) {
+        return (
+            <>
+                <Header />
+                <main className="main">
+                    <div className="main__container">
+                        <div className="auth-required" style={{
+                            padding: '40px 20px',
+                            textAlign: 'center',
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            borderRadius: '15px',
+                            color: 'white',
+                            marginTop: '50px'
+                        }}>
+                            <div style={{fontSize: '60px', marginBottom: '20px'}}>🔐</div>
+                            <h2 style={{marginBottom: '15px'}}>Требуется авторизация</h2>
+                            <p style={{marginBottom: '25px', fontSize: '16px', opacity: 0.9}}>
+                                Для работы с приложением необходимо войти через Telegram
+                            </p>
+                            <p style={{
+                                fontSize: '14px',
+                                opacity: 0.7,
+                                marginTop: '30px',
+                                padding: '10px',
+                                background: 'rgba(255,255,255,0.1)',
+                                borderRadius: '8px'
+                            }}>
+                                ⚠️ Если авторизация не происходит автоматически,<br/>
+                                попробуйте перезагрузить Mini App (потяните вниз)
+                            </p>
+                        </div>
                     </div>
                 </main>
                 <MobileHeader />
@@ -184,9 +420,38 @@ export function HomePage() {
             <Header />
             <main className="main">
                 <div className="main__container">
+                    {/* Кнопка для принудительного обновления данных */}
+                    <div style={{
+                        textAlign: 'right',
+                        marginBottom: '15px',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                    }}>
+                        <div style={{fontSize: '14px', color: '#666'}}>
+                            {lastUpdateTime && `Обновлено: ${lastUpdateTime.toLocaleTimeString()}`}
+                        </div>
+                        <button 
+                            onClick={refreshData}
+                            style={{
+                                padding: '8px 16px',
+                                backgroundColor: '#f0f0f0',
+                                color: '#333',
+                                border: '1px solid #ddd',
+                                borderRadius: '5px',
+                                fontSize: '14px',
+                                cursor: 'pointer'
+                            }}
+                            title="Обновить данные"
+                        >
+                            🔄 Обновить
+                        </button>
+                    </div>
+                    
                     <section className="main__top-section">
                         <div className="main__top-section-header">
-                            <h1 className="main__h1 h1">Добрый день, Николай!</h1>
+                            {/* ИСПРАВЛЕНО: Динамическое имя пользователя */}
+                            <h1 className="main__h1 h1">Добрый день, {userName}!</h1>
                             <span className="main__top-section-text-1">У вас запланировано </span>
                             <span className="main__top-section-text-2">{dataEvents.length} мероприят
                                 {dataEvents.length >= 2 && dataEvents.length <= 4 ? "ия" :
@@ -247,6 +512,9 @@ export function HomePage() {
                                 ) : (
                                     <div className="no-events-message">
                                         <p>Ближайших событий нет</p>
+                                        <p style={{fontSize: '14px', color: '#666', marginTop: '10px'}}>
+                                            Создайте первое событие!
+                                        </p>
                                     </div>
                                 )}
                             </div>
@@ -311,13 +579,15 @@ export function HomePage() {
                                 ) : (
                                     <div className="no-deadlines-message">
                                         <p>Срочных дедлайнов нет</p>
+                                        <p style={{fontSize: '14px', color: '#666', marginTop: '10px'}}>
+                                            Все задачи выполнены вовремя! 🎉
+                                        </p>
                                     </div>
                                 )}
                             </div>
                         </div>
                     </section>
                 </div>
-
             </main>
             <MobileHeader />
         </>

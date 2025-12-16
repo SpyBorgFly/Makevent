@@ -334,24 +334,25 @@ export function HomePage() {
     };
 
     const getUrgentDeadlinesCount = () => {
-        if (!allTasks || allTasks.length === 0) return 0;
+    if (!allTasks || allTasks.length === 0) return 0;
 
-        const today = new Date();
-        const threeDaysLater = new Date();
-        threeDaysLater.setDate(today.getDate() + 3);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const threeDaysLater = new Date();
+    threeDaysLater.setDate(today.getDate() + 7);
+    threeDaysLater.setHours(23, 59, 59, 999);
 
-        return allTasks.filter(task => {
-            if (!task.due_date || task.status === 'done' || task.status === 'cancelled') {
-                return false;
-            }
+    return allTasks.filter(task => {
+        if (!task.due_date || task.status === 'done' || task.status === 'cancelled') {
+            return false;
+        }
 
-            const deadline = new Date(task.due_date);
-            const isUrgentPriority = task.priority === 'urgent' || task.priority === 'high';
-            const isNearDeadline = deadline <= threeDaysLater && deadline >= today;
+        const deadline = new Date(task.due_date);
+        deadline.setHours(0, 0, 0, 0);
 
-            return isUrgentPriority && isNearDeadline;
-        }).length;
-    };
+        return deadline <= threeDaysLater && deadline >= today;
+    }).length;
+};
 
     const nearestEvents = getNearestEvents();
     const nearestDeadlines = getNearestDeadlines();
@@ -522,7 +523,7 @@ export function HomePage() {
 
                         <div className="widgets__card shadow-glass">
                             <div className="widgets__card-header-section">
-                                <h2 className="widgets__card-header">Срочные дедлайны</h2>
+                                <h2 className="widgets__card-header">Ближайшие дедлайны</h2>
                                 <Link to="/events" className="widgets__card-header-link">Все события</Link>
                             </div>
                             <div className="widgets__card-event-list">

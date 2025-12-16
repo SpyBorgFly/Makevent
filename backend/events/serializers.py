@@ -14,11 +14,12 @@ class EventSerializer(serializers.ModelSerializer):
             'event_time',
             'event_type',
             'status',
-            'created_by',
+            # 'created_by' — УБРАНО! Заполняется автоматически на сервере
             'created_at',
             'updated_at'
         ]
-        read_only_fields = ['id', 'created_by', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,14 +37,17 @@ class TaskSerializer(serializers.ModelSerializer):
         data['assignees'] = [user.id for user in instance.assignees.all()]
         return data
 
+
 class FinanceItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = FinanceItem
         fields = [
             'id', 'event', 'title', 'amount', 'type', 'category',
-            'date', 'description', 'created_by', 'created_at'
+            'date', 'description',
+            # 'created_by' — УБРАНО! Заполняется автоматически
+            'created_at'
         ]
-        read_only_fields = ['id', 'created_by', 'created_at']
+        read_only_fields = ['id', 'created_at']
 
 
 class NoteSerializer(serializers.ModelSerializer):
@@ -55,17 +59,18 @@ class NoteSerializer(serializers.ModelSerializer):
             'title',
             'content',
             'tags',
-            'created_by',
+            # 'created_by' — УБРАНО! Заполняется автоматически
             'created_at',
             'updated_at'
         ]
-        read_only_fields = ['id', 'created_by', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
 
 
 class TelegramUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = TelegramUser
         fields = ['telegram_id', 'username', 'first_name', 'last_name', 'language_code', 'is_premium']
+
 
 class TelegramAuthSerializer(serializers.Serializer):
     """Сериализатор для данных аутентификации Telegram"""
@@ -76,6 +81,7 @@ class TelegramAuthSerializer(serializers.Serializer):
         if not init_data:
             raise serializers.ValidationError("initData is required")
         return data
+
 
 class UserSerializer(serializers.ModelSerializer):
     telegram_profile = TelegramUserSerializer(read_only=True)

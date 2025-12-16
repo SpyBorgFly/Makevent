@@ -444,6 +444,10 @@ class FinanceItemViewSet(viewsets.ModelViewSet):
             logger.debug(f"Returning {items.count()} finance items for user {self.request.user.id}")
             return items
         return FinanceItem.objects.none()
+    
+    def perform_create(self, serializer):
+        logger.info(f"Setting created_by to user {self.request.user.id} for finance item")
+        serializer.save(created_by=self.request.user)  # ← Добавлено!
 
 class NoteViewSet(viewsets.ModelViewSet):
     queryset = Note.objects.all()
@@ -470,7 +474,7 @@ class NoteViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         logger.info(f"Setting created_by to user {self.request.user.id} for note")
-        serializer.save(created_by=self.request.user)
+        serializer.save(created_by=self.request.user)  
 
 @api_view(["GET"])
 @authentication_classes([TokenAuthentication])

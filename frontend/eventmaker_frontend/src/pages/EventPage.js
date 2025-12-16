@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router";
 import eventAPI from "../api";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Header } from "../components/Header";
 import { MobileHeader } from "../components/MobileHeader";
 import { GanttChart } from "../components/GanttChart";
@@ -17,6 +17,16 @@ export function EventPage() {
     const [showStatusMenu, setShowStatusMenu] = useState(false);
     const [newTaskDueDate, setNewTaskDueDate] = useState("");
     const [newTaskStartDate, setNewTaskStartDate] = useState("");
+    
+    // Состояния для редактирования
+    const [isEditingTitle, setIsEditingTitle] = useState(false);
+    const [isEditingDescription, setIsEditingDescription] = useState(false);
+    const [editedTitle, setEditedTitle] = useState("");
+    const [editedDescription, setEditedDescription] = useState("");
+    
+    // Рефы для автофокуса
+    const titleInputRef = useRef(null);
+    const descriptionTextareaRef = useRef(null);
 
     const fetchData = async (id) => {
         try {
@@ -44,6 +54,9 @@ export function EventPage() {
             if (eventId) {
                 const data = await fetchData(eventId);
                 setDataEvent(data);
+                // Устанавливаем начальные значения для редактирования
+                setEditedTitle(data?.title || "");
+                setEditedDescription(data?.description || "");
                 const taskData = await fetchDataTasks(eventId);
                 setTaskList(taskData);
             }
@@ -51,6 +64,76 @@ export function EventPage() {
         };
         loadData();
     }, [eventId]);
+
+    // Автофокус при входе в режим редактирования
+    useEffect(() => {
+        if (isEditingTitle && titleInputRef.current) {
+            titleInputRef.current.focus();
+            titleInputRef.current.select();
+        }
+        if (isEditingDescription && descriptionTextareaRef.current) {
+            descriptionTextareaRef.current.focus();
+        }
+    }, [isEditingTitle, isEditingDescription]);
+
+    // Функция сохранения изменений события
+    const saveEventChanges = async () => {
+        if (!eventId || !dataEvent) return;
+        
+        try {
+            await eventAPI.updateEvent(eventId, {
+                ...dataEvent,
+                title: editedTitle,
+                description: editedDescription
+            });
+            
+            // Обновляем локальные данные
+            setDataEvent(prev => ({
+                ...prev,
+                title: editedTitle,
+                description: editedDescription,
+                updated_at: new Date().toISOString()
+            }));
+            
+        } catch (error) {
+            console.error('Ошибка сохранения события:', error);
+        }
+    };
+
+    // Обработчик потери фокуса (сохраняем автоматически)
+    const handleBlur = async (field) => {
+        await saveEventChanges();
+        
+        switch(field) {
+            case 'title':
+                setIsEditingTitle(false);
+                break;
+            case 'description':
+                setIsEditingDescription(false);
+                break;
+        }
+    };
+
+    // Обработчик нажатия клавиш
+    const handleKeyPress = (e, field) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleBlur(field);
+        }
+        if (e.key === 'Escape') {
+            // Восстанавливаем оригинальные значения
+            switch(field) {
+                case 'title':
+                    setEditedTitle(dataEvent.title || "");
+                    setIsEditingTitle(false);
+                    break;
+                case 'description':
+                    setEditedDescription(dataEvent.description || "");
+                    setIsEditingDescription(false);
+                    break;
+            }
+        }
+    };
 
     const toggleTaskStatus = async (taskId, currentStatus) => {
         try {
@@ -304,7 +387,41 @@ export function EventPage() {
                 <div className="main__container">
                     <div className="header-event__section">
                         <div className="event-header-top">
-                            <h1 className="event__title">{dataEvent.title}</h1>
+                            {/* Название события с редактированием */}
+                            {isEditingTitle ? (
+                                <div style={{display: 'flex', alignItems: 'center', gap: '10px', flex: 1}}>
+                                    <input
+                                        ref={titleInputRef}
+                                        type="text"
+                                        value={editedTitle}
+                                        onChange={(e) => setEditedTitle(e.target.value)}
+                                        onKeyDown={(e) => handleKeyPress(e, 'title')}
+                                        onBlur={() => handleBlur('title')}
+                                        className="event-title-input"
+                                        style={{
+                                            flex: 1,
+                                            fontSize: '1.5rem',
+                                            fontWeight: 'bold',
+                                            padding: '8px',
+                                            border: '1px solid #ddd',
+                                            borderRadius: '4px'
+                                        }}
+                                        placeholder="Название события"
+                                    />
+                                    <small style={{color: '#666', fontSize: '12px'}}>
+                                        Enter - сохранить, Esc - отмена
+                                    </small>
+                                </div>
+                            ) : (
+                                <h1 
+                                    className="event__title"
+                                    onDoubleClick={() => setIsEditingTitle(true)}
+                                    style={{cursor: 'pointer'}}
+                                    title="Двойной клик для редактирования названия"
+                                >
+                                    {dataEvent.title}
+                                </h1>
+                            )}
                             <div className="event-actions">
                                 <div className="status-selector-wrapper">
                                     <button
@@ -354,6 +471,11 @@ export function EventPage() {
                             <span className="event-created">
                                 Создано: {new Date(dataEvent.created_at).toLocaleDateString('ru-RU')}
                             </span>
+                            {dataEvent.updated_at !== dataEvent.created_at && (
+                                <span className="event-updated">
+                                    Изменено: {new Date(dataEvent.updated_at).toLocaleDateString('ru-RU')}
+                                </span>
+                            )}
                         </div>
                     </div>
 
@@ -382,10 +504,59 @@ export function EventPage() {
                         </div>
                     )}
 
-                    {/* Описание события */}
+                    {/* Описание события с редактированием */}
                     <section className="event__widget">
                         <div className="event__description-header">Описание:</div>
-                        <p className="event__description">{dataEvent.description}</p>
+                        {isEditingDescription ? (
+                            <div style={{position: 'relative'}}>
+                                <textarea
+                                    ref={descriptionTextareaRef}
+                                    value={editedDescription}
+                                    onChange={(e) => setEditedDescription(e.target.value)}
+                                    onKeyDown={(e) => handleKeyPress(e, 'description')}
+                                    onBlur={() => handleBlur('description')}
+                                    className="event-description-input"
+                                    style={{
+                                        width: '100%',
+                                        minHeight: '100px',
+                                        padding: '10px',
+                                        border: '1px solid #ddd',
+                                        borderRadius: '4px',
+                                        fontSize: '1rem'
+                                    }}
+                                    placeholder="Описание события"
+                                />
+                                <div style={{
+                                    position: 'absolute',
+                                    bottom: '10px',
+                                    right: '10px',
+                                    background: 'rgba(255,255,255,0.9)',
+                                    padding: '4px 8px',
+                                    borderRadius: '4px',
+                                    fontSize: '12px',
+                                    color: '#666'
+                                }}>
+                                    Ctrl+Enter - сохранить, Esc - отмена
+                                </div>
+                            </div>
+                        ) : (
+                            <p 
+                                className="event__description"
+                                onDoubleClick={() => setIsEditingDescription(true)}
+                                style={{
+                                    cursor: 'pointer',
+                                    minHeight: '50px',
+                                    padding: '10px 0'
+                                }}
+                                title="Двойной клик для редактирования описания"
+                            >
+                                {dataEvent.description || (
+                                    <span style={{color: '#666', fontStyle: 'italic'}}>
+                                        (двойной клик чтобы добавить описание)
+                                    </span>
+                                )}
+                            </p>
+                        )}
                     </section>
 
                     {/* Секция задач */}

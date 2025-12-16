@@ -21,11 +21,10 @@ export function NotePage() {
     const [editedContent, setEditedContent] = useState("");
     const [editedTags, setEditedTags] = useState("");
     
-    // Рефы для автофокуса и отслеживания изменений
+    // Рефы для автофокуса
     const titleInputRef = useRef(null);
     const contentTextareaRef = useRef(null);
     const tagsInputRef = useRef(null);
-    const saveTimeoutRef = useRef(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -75,10 +74,11 @@ export function NotePage() {
         }
         if (isEditingTags && tagsInputRef.current) {
             tagsInputRef.current.focus();
+            tagsInputRef.current.select();
         }
     }, [isEditingTitle, isEditingContent, isEditingTags]);
 
-    // Функция сохранения изменений с дебаунсом
+    // Функция сохранения изменений
     const saveChanges = async () => {
         if (!noteId) return;
         
@@ -100,22 +100,13 @@ export function NotePage() {
             
         } catch (error) {
             console.error('Ошибка сохранения заметки:', error);
-            // Можно добавить тонкое уведомление вместо alert
-            // Например, временное изменение цвета границы
         }
     };
 
     // Обработчик потери фокуса (сохраняем автоматически)
     const handleBlur = async (field) => {
-        // Отменяем предыдущий таймаут
-        if (saveTimeoutRef.current) {
-            clearTimeout(saveTimeoutRef.current);
-        }
-        
-        // Сохраняем немедленно
         await saveChanges();
         
-        // Выходим из режима редактирования
         switch(field) {
             case 'title':
                 setIsEditingTitle(false);
@@ -129,7 +120,7 @@ export function NotePage() {
         }
     };
 
-    // Обработчик нажатия Enter для быстрого сохранения
+    // Обработчик нажатия клавиш
     const handleKeyPress = (e, field) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -151,6 +142,11 @@ export function NotePage() {
                     setIsEditingTags(false);
                     break;
             }
+        }
+        // Для текстового поля - Ctrl+Enter для сохранения
+        if (e.key === 'Enter' && e.ctrlKey && field === 'content') {
+            e.preventDefault();
+            handleBlur(field);
         }
     };
 
@@ -240,8 +236,9 @@ export function NotePage() {
                                 ←
                             </button>
                             <div style={{flex: 1}}>
+                                {/* Редактирование названия заметки */}
                                 {isEditingTitle ? (
-                                    <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                    <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px'}}>
                                         <input
                                             ref={titleInputRef}
                                             type="text"
@@ -250,10 +247,17 @@ export function NotePage() {
                                             onKeyDown={(e) => handleKeyPress(e, 'title')}
                                             onBlur={() => handleBlur('title')}
                                             className="popup-form__name-section-input"
-                                            style={{flex: 1}}
+                                            style={{
+                                                flex: 1,
+                                                fontSize: '1.5rem',
+                                                fontWeight: 'bold',
+                                                padding: '8px',
+                                                border: '1px solid #ddd',
+                                                borderRadius: '4px'
+                                            }}
                                             placeholder="Название заметки"
                                         />
-                                        <small style={{color: '#666', fontSize: '12px'}}>
+                                        <small style={{color: '#666', fontSize: '12px', whiteSpace: 'nowrap'}}>
                                             Enter - сохранить, Esc - отмена
                                         </small>
                                     </div>
@@ -261,8 +265,8 @@ export function NotePage() {
                                     <h1 
                                         className="note-title"
                                         onDoubleClick={() => setIsEditingTitle(true)}
-                                        style={{cursor: 'pointer'}}
-                                        title="Двойной клик для редактирования"
+                                        style={{cursor: 'pointer', marginBottom: '5px'}}
+                                        title="Двойной клик для редактирования названия"
                                     >
                                         {noteData.title || 'Без названия'}
                                     </h1>
@@ -314,10 +318,15 @@ export function NotePage() {
                                     onKeyDown={(e) => handleKeyPress(e, 'tags')}
                                     onBlur={() => handleBlur('tags')}
                                     className="popup-form__name-section-input"
-                                    style={{flex: 1}}
+                                    style={{
+                                        flex: 1,
+                                        padding: '8px',
+                                        border: '1px solid #ddd',
+                                        borderRadius: '4px'
+                                    }}
                                     placeholder="тег1, тег2, тег3"
                                 />
-                                <small style={{color: '#666', fontSize: '12px'}}>
+                                <small style={{color: '#666', fontSize: '12px', whiteSpace: 'nowrap'}}>
                                     Enter - сохранить, Esc - отмена
                                 </small>
                             </div>
@@ -335,7 +344,7 @@ export function NotePage() {
                                         </span>
                                     ))
                                 ) : (
-                                    <span style={{color: '#666', fontStyle: 'italic'}}>
+                                    <span style={{color: '#666', fontStyle: 'italic', padding: '8px 0'}}>
                                         (двойной клик чтобы добавить теги)
                                     </span>
                                 )}
@@ -345,70 +354,86 @@ export function NotePage() {
 
                     {/* Содержимое заметки с редактированием */}
                     <section className="note-content">
-                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px'}}>
-                            <h2 className="content-title">Содержимое:</h2>
-                            {!isEditingContent && (
-                                <button
-                                    onClick={() => setIsEditingContent(true)}
-                                    style={{
-                                        background: 'none',
-                                        border: '1px solid #ddd',
-                                        padding: '5px 10px',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer',
-                                        fontSize: '14px'
-                                    }}
-                                    title="Редактировать содержимое"
-                                >
-                                    ✏️ Редактировать
-                                </button>
-                            )}
-                        </div>
+                        <h2 className="content-title">Содержимое:</h2>
                         
                         {isEditingContent ? (
-                            <div className="content-editor">
-                                <div style={{position: 'relative'}}>
-                                    <textarea
-                                        ref={contentTextareaRef}
-                                        value={editedContent}
-                                        onChange={(e) => setEditedContent(e.target.value)}
-                                        onKeyDown={(e) => handleKeyPress(e, 'content')}
-                                        onBlur={() => handleBlur('content')}
-                                        className="popup-form__description-section-input"
-                                        rows="10"
-                                        style={{width: '100%', marginBottom: '15px'}}
-                                    />
-                                    <div style={{
-                                        position: 'absolute',
-                                        bottom: '20px',
-                                        right: '10px',
-                                        background: 'rgba(255,255,255,0.9)',
-                                        padding: '4px 8px',
+                            <div className="content-editor" style={{position: 'relative'}}>
+                                <textarea
+                                    ref={contentTextareaRef}
+                                    value={editedContent}
+                                    onChange={(e) => setEditedContent(e.target.value)}
+                                    onKeyDown={(e) => handleKeyPress(e, 'content')}
+                                    onBlur={() => handleBlur('content')}
+                                    className="popup-form__description-section-input"
+                                    rows="10"
+                                    style={{
+                                        width: '100%',
+                                        minHeight: '200px',
+                                        padding: '15px',
+                                        border: '1px solid #ddd',
                                         borderRadius: '4px',
-                                        fontSize: '12px',
-                                        color: '#666'
-                                    }}>
-                                        Ctrl+Enter - сохранить, Esc - отмена
-                                    </div>
+                                        fontSize: '1rem',
+                                        lineHeight: '1.5',
+                                        resize: 'vertical'
+                                    }}
+                                    placeholder="Содержимое заметки..."
+                                />
+                                <div style={{
+                                    position: 'absolute',
+                                    bottom: '15px',
+                                    right: '15px',
+                                    background: 'rgba(255,255,255,0.9)',
+                                    padding: '4px 8px',
+                                    borderRadius: '4px',
+                                    fontSize: '12px',
+                                    color: '#666',
+                                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                                }}>
+                                    Ctrl+Enter - сохранить, Esc - отмена
                                 </div>
                             </div>
                         ) : (
                             <div 
                                 className="note-content-text"
                                 onDoubleClick={() => setIsEditingContent(true)}
-                                style={{cursor: 'pointer', minHeight: '100px'}}
+                                style={{
+                                    cursor: 'pointer',
+                                    minHeight: '200px',
+                                    padding: '15px',
+                                    border: '1px solid transparent',
+                                    borderRadius: '4px',
+                                    transition: 'border-color 0.2s',
+                                    lineHeight: '1.6'
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}
+                                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
                                 title="Двойной клик для редактирования содержимого"
                             >
                                 {noteData.content ? (
                                     <div className="content-paragraphs">
                                         {noteData.content.split('\n').map((paragraph, index) => (
-                                            <p key={index} className="content-paragraph">
+                                            <p 
+                                                key={index} 
+                                                className="content-paragraph"
+                                                style={{
+                                                    margin: '0 0 10px 0',
+                                                    padding: '0'
+                                                }}
+                                            >
                                                 {paragraph}
                                             </p>
                                         ))}
                                     </div>
                                 ) : (
-                                    <p className="empty-content" style={{color: '#666', fontStyle: 'italic'}}>
+                                    <p 
+                                        className="empty-content" 
+                                        style={{
+                                            color: '#666', 
+                                            fontStyle: 'italic',
+                                            textAlign: 'center',
+                                            padding: '50px 20px'
+                                        }}
+                                    >
                                         (двойной клик чтобы добавить содержимое)
                                     </p>
                                 )}

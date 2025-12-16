@@ -292,6 +292,14 @@ export const eventAPI = {
         return apiRequest(`/notes/${id}/`, { method: 'DELETE' });
     },
 
+    updateNote: (id, noteData) => {
+    invalidateCacheForUrl('/notes/');
+    return apiRequest(`/notes/${id}/`, { 
+        method: 'PATCH', 
+        data: noteData 
+    });
+    },
+
     // === Финансы ===
     getMyFinances: () => apiRequest('/finance-items/', { method: 'GET' }),
     createFinanceForEvent: (eventId, data) => {

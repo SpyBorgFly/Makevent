@@ -14,19 +14,10 @@ export function Header() {
                     <ul className="nav__menu-list">
                         <li className="nav__menu-list-item"><NavLink to="/" className="menu-link">Дашборд</NavLink></li>
                         <li className="nav__menu-list-item"><NavLink to="/events" className="menu-link">Мероприятия</NavLink></li>
-                        <li className="nav__menu-list-item"><NavLink to="" className="menu-link">Контакты</NavLink></li>
                         <li className="nav__menu-list-item"><NavLink to="/notes" className="menu-link">Заметки</NavLink></li>
                         <li className="nav__menu-list-item"><NavLink to="/finance" className="menu-link">Финансы</NavLink></li>
                     </ul>
                 </nav>
-                <div className="header__profile">
-                    <NavLink to='/' className="header__profile-link">
-                        <div className="header__profile-avatar">
-                            <img src="/images/default-avatar.png" alt="Avatar" className="profile-avatar" />
-                        </div>
-                        <div className="header__profile-name">Николай</div>
-                    </NavLink>
-                </div>
             </div>
         </header>
     );

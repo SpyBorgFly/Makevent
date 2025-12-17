@@ -37,7 +37,7 @@ from icalendar import Calendar, Event
 
 # ============ КОНФИГУРАЦИЯ ============
 BOT_TOKEN = "8044102940:AAFLL-CLGeJa34HhZEopCstf1U1bnRxUKHE"
-CHECK_INTERVAL = 3600  # Проверять каждые 60 минут (3600 секунд)
+CHECK_INTERVAL = 3600 * 24  # Проверять каждые 60 минут (3600 секунд)
 
 # ============ НАСТРОЙКА ЛОГИРОВАНИЯ ============
 # Функция для обработки Unicode в Windows

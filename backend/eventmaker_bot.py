@@ -37,7 +37,7 @@ from icalendar import Calendar, Event
 
 # ============ КОНФИГУРАЦИЯ ============
 BOT_TOKEN = "8044102940:AAFLL-CLGeJa34HhZEopCstf1U1bnRxUKHE"
-CHECK_INTERVAL = 3600 * 24  # Проверять каждые 60 минут (3600 секунд)
+CHECK_INTERVAL = 3600 * 24  # Проверять каждые 24 часа (86400 секунд)
 
 # ============ НАСТРОЙКА ЛОГИРОВАНИЯ ============
 # Функция для обработки Unicode в Windows
@@ -175,7 +175,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"/test — тест уведомления\n"
         f"/mytasks — мои задачи\n"
         f"/help — помощь\n\n"
-        f"⚡ <b>Автопроверка:</b> Каждый час\n"
+        f"⚡ <b>Автопроверка:</b> Раз в {CHECK_INTERVAL//3600} часа\n"
         f"🔔 <b>Уведомления:</b> Автоматически"
     )
     
@@ -362,7 +362,7 @@ async def send_notification(chat_id: str, task, days_left: int):
             f"{emoji} <b>{text}</b>\n\n"
             f"📝 <b>Задача:</b> {task.title}\n"
             f"📅 <b>Дедлайн:</b> {task.due_date.strftime('%d.%m.%Y %H:%M')}\n"
-            f"📋 <b>Событие:</b> {task.event.title if task.event else 'Без события'}\n"
+            f"📋 <b>Событие:</b> {await sync_to_async(lambda: task.event.title if task.event else 'Без события')()}\n"
             f"📊 <b>Статус:</b> {await sync_to_async(lambda: task.get_status_display())()}\n"
             f"🚨 <b>Приоритет:</b> {await sync_to_async(lambda: task.get_priority_display())()}\n\n"
             f"Не забудьте выполнить задачу вовремя!"
@@ -482,10 +482,13 @@ async def mytasks_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         status = f"ЧЕРЕЗ {days_left} ДНЕЙ"
                         emoji = "📝"
                     
+                    # Оборачиваем обращение к связанному полю event
+                    event_title = await sync_to_async(lambda: task.event.title if task.event else 'Без события')()
+                    
                     text += (
                         f"{emoji} <b>{task.title}</b>\n"
                         f"📅 {due_date.strftime('%d.%m.%Y')} ({status})\n"
-                        f"📋 Событие: {task.event.title if task.event else 'Без события'}\n"
+                        f"📋 Событие: {event_title}\n"
                         f"🚨 Приоритет: {await sync_to_async(lambda: task.get_priority_display())()}\n"
                         f"📊 Статус: {await sync_to_async(lambda: task.get_status_display())()}\n\n"
                     )
@@ -528,7 +531,7 @@ async def calendar_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         event.add('summary', f"📅 Дедлайн: {task.title}")
         event.add('dtstart', task.due_date)
         event.add('dtend', task.due_date + timedelta(minutes=30))
-        event.add('description', f"Событие: {task.event.title if task.event else 'Без события'}\n"
+        event.add('description', f"Событие: {await sync_to_async(lambda: task.event.title if task.event else 'Без события')()}\n"
                                 f"Статус: {await sync_to_async(lambda: task.get_status_display())()}\n"
                                 f"Приоритет: {await sync_to_async(lambda: task.get_priority_display())()}")
         cal.add_component(event)
@@ -580,6 +583,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "1. Настройте уведомления через /settings\n"
         "2. Создавайте события и задачи в мини-аппе\n"
         "3. Получайте уведомления и в календаре автоматически!\n\n"
+        f"⚡ <b>Автопроверка:</b> Раз в {CHECK_INTERVAL//3600} часа\n"
         "🤖 <b>Бот работает 24/7</b>"
     )
     

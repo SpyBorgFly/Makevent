@@ -8,7 +8,6 @@ export function HomePage() {
     const [dataEvents, setDataEvents] = useState([]);
     const [allTasks, setAllTasks] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [lastUpdateTime, setLastUpdateTime] = useState(null);
     const [userName, setUserName] = useState('Друг'); // Имя пользователя по умолчанию
     const [authChecked, setAuthChecked] = useState(false);
 
@@ -149,8 +148,8 @@ export function HomePage() {
         }
     }, []);
 
-    // Функция обновления данных
-    const refreshData = async () => {
+    // Функция загрузки данных
+    const loadData = async () => {
         try {
             setLoading(true);
             
@@ -177,10 +176,9 @@ export function HomePage() {
             
             setDataEvents(events);
             setAllTasks(tasks);
-            setLastUpdateTime(new Date());
             
         } catch (error) {
-            console.error('Ошибка обновления данных:', error);
+            console.error('Ошибка загрузки данных:', error);
             
             // Если ошибка 401, удаляем токен
             if (error.response?.status === 401) {
@@ -203,7 +201,7 @@ export function HomePage() {
             
             // 2. Если авторизованы - загружаем данные
             if (isAuthenticated) {
-                await refreshData();
+                await loadData();
             } else {
                 console.log('Пользователь не авторизован');
                 setLoading(false);
@@ -218,11 +216,23 @@ export function HomePage() {
         return () => clearTimeout(timer);
     }, [performAutoAuth, fetchEvents, fetchAllTasks]);
 
+    // Автоматическое обновление каждые 5 минут
+    useEffect(() => {
+        if (!authChecked || !localStorage.getItem('auth_token')) return;
+
+        const intervalId = setInterval(() => {
+            console.log('Автоматическое обновление данных...');
+            loadData();
+        }, 5 * 60 * 1000); // 5 минут
+
+        return () => clearInterval(intervalId);
+    }, [authChecked]);
+
     // Слушаем события обновления данных
     useEffect(() => {
         const handleRefresh = () => {
             console.log('Получен сигнал обновления данных');
-            refreshData();
+            loadData();
         };
         
         window.addEventListener('refreshAllData', handleRefresh);
@@ -231,14 +241,6 @@ export function HomePage() {
         return () => {
             window.removeEventListener('refreshAllData', handleRefresh);
             window.removeEventListener('cacheInvalidated', handleRefresh);
-        };
-    }, []);
-
-    // Экспортируем функцию обновления для использования в других компонентах
-    useEffect(() => {
-        window.refreshHomePageData = refreshData;
-        return () => {
-            delete window.refreshHomePageData;
         };
     }, []);
 
@@ -334,25 +336,25 @@ export function HomePage() {
     };
 
     const getUrgentDeadlinesCount = () => {
-    if (!allTasks || allTasks.length === 0) return 0;
+        if (!allTasks || allTasks.length === 0) return 0;
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const threeDaysLater = new Date();
-    threeDaysLater.setDate(today.getDate() + 7);
-    threeDaysLater.setHours(23, 59, 59, 999);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const threeDaysLater = new Date();
+        threeDaysLater.setDate(today.getDate() + 7);
+        threeDaysLater.setHours(23, 59, 59, 999);
 
-    return allTasks.filter(task => {
-        if (!task.due_date || task.status === 'done' || task.status === 'cancelled') {
-            return false;
-        }
+        return allTasks.filter(task => {
+            if (!task.due_date || task.status === 'done' || task.status === 'cancelled') {
+                return false;
+            }
 
-        const deadline = new Date(task.due_date);
-        deadline.setHours(0, 0, 0, 0);
+            const deadline = new Date(task.due_date);
+            deadline.setHours(0, 0, 0, 0);
 
-        return deadline <= threeDaysLater && deadline >= today;
-    }).length;
-};
+            return deadline <= threeDaysLater && deadline >= today;
+        }).length;
+    };
 
     const nearestEvents = getNearestEvents();
     const nearestDeadlines = getNearestDeadlines();
@@ -365,11 +367,6 @@ export function HomePage() {
                 <main className="main">
                     <div className="main__container">
                         <div className="loading">Загрузка...</div>
-                        {lastUpdateTime && (
-                            <div className="last-update">
-                                Последнее обновление: {lastUpdateTime.toLocaleTimeString()}
-                            </div>
-                        )}
                     </div>
                 </main>
                 <MobileHeader />
@@ -421,37 +418,9 @@ export function HomePage() {
             <Header />
             <main className="main">
                 <div className="main__container">
-                    {/* Кнопка для принудительного обновления данных */}
-                    <div style={{
-                        textAlign: 'right',
-                        marginBottom: '15px',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center'
-                    }}>
-                        <div style={{fontSize: '14px', color: '#666'}}>
-                            {lastUpdateTime && `Обновлено: ${lastUpdateTime.toLocaleTimeString()}`}
-                        </div>
-                        <button 
-                            onClick={refreshData}
-                            style={{
-                                padding: '8px 16px',
-                                backgroundColor: '#f0f0f0',
-                                color: '#333',
-                                border: '1px solid #ddd',
-                                borderRadius: '5px',
-                                fontSize: '14px',
-                                cursor: 'pointer'
-                            }}
-                            title="Обновить данные"
-                        >
-                            🔄 Обновить
-                        </button>
-                    </div>
-                    
+                    {/* УПРОЩЕННАЯ ШАПКА - только приветствие */}
                     <section className="main__top-section">
                         <div className="main__top-section-header">
-                            {/* ИСПРАВЛЕНО: Динамическое имя пользователя */}
                             <h1 className="main__h1 h1">Добрый день, {userName}!</h1>
                             <span className="main__top-section-text-1">У вас запланировано </span>
                             <span className="main__top-section-text-2">{dataEvents.length} мероприят

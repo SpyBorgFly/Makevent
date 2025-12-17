@@ -549,3 +549,31 @@ def server_error(request):
     from django.http import JsonResponse
     logger.error("Internal server error")
     return JsonResponse({'error': 'Internal Server Error', 'status_code': 500}, status=500)
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def setup_event_notifications(request, event_id):
+    """API для автоматической настройки уведомлений при создании события"""
+    try:
+        event = Event.objects.get(id=event_id, created_by=request.user)
+        
+        # Получаем Telegram пользователя
+        telegram_user = TelegramUser.objects.filter(django_user=request.user).first()
+        if not telegram_user:
+            return Response({'error': 'Telegram user not found'}, status=400)
+        
+        # Здесь можно вызвать функцию настройки уведомлений
+        # В реальности нужно запустить асинхронную задачу
+        return Response({
+            'success': True,
+            'message': 'Уведомления будут настроены',
+            'event_id': event.id
+        })
+        
+    except Event.DoesNotExist:
+        return Response({'error': 'Event not found'}, status=404)
+    except Exception as e:
+        logger.error(f"Error setting up notifications: {e}")
+        return Response({'error': str(e)}, status=500)

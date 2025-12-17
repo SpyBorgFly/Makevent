@@ -78,6 +78,19 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
+    
+    telegram_message_1day_id = models.CharField(
+        max_length=100, 
+        blank=True, 
+        null=True,
+        verbose_name="ID сообщения за 1 день"
+    )
+    telegram_message_3days_id = models.CharField(
+        max_length=100, 
+        blank=True, 
+        null=True,
+        verbose_name="ID сообщения за 3 дня"
+    )
 
 class Task(models.Model):
     STATUS_TODO = 'todo'
@@ -166,3 +179,41 @@ class Note(models.Model):
     def __str__(self):
         return f"{self.title} ({self.event.title})"
     
+# events/models.py - добавь в конец файла
+
+class NotificationSettings(models.Model):
+    """Настройки уведомлений пользователя - хранятся в БД"""
+    user = models.OneToOneField(
+        User, 
+        on_delete=models.CASCADE,
+        related_name='notification_settings'
+    )
+    
+    # Telegram Chat ID (берется из Mini App или бота)
+    telegram_chat_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name="ID чата в Telegram"
+    )
+    
+    # Простые настройки (только то, что тебе нужно)
+    notify_1_day = models.BooleanField(default=True, verbose_name="За 1 день")
+    notify_3_days = models.BooleanField(default=True, verbose_name="За 3 дня")
+    
+    enabled = models.BooleanField(default=True, verbose_name="Включено")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "Настройки уведомлений"
+        verbose_name_plural = "Настройки уведомлений"
+    
+    def __str__(self):
+        return f"Уведомления для {self.user.username}"
+    
+    @classmethod
+    def get_or_create_for_user(cls, user):
+        settings, created = cls.objects.get_or_create(user=user)
+        return settings
